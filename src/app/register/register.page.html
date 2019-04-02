@@ -1,0 +1,86 @@
+<ion-content padding scrollY="false">
+
+    <ion-icon name="arrow-back" color="darkBlue" class="back-icon" (click)="dismiss()">
+    </ion-icon>
+    <ion-img src="assets/imgs/logo.png"></ion-img>
+
+    <form [formGroup]="register" (ngSubmit)="emailRegister()">
+        <ion-grid>
+            <ion-row>
+                <ion-col size="12">
+                    <ion-item>
+                        <ion-label color="darkBlue" position="floating">
+                            <ion-text>
+                                Nombre y apellido
+                            </ion-text>
+                        </ion-label>
+                        <ion-input type="email" inputmode="email" formControlName="name" color="darkBlue" autofocus>
+                        </ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col size="12">
+                    <ion-item>
+                        <ion-label color="darkBlue" position="floating">
+                            <ion-text>
+                                Email
+                            </ion-text>
+                        </ion-label>
+                        <ion-input type="email" inputmode="email" formControlName="email" color="darkBlue">
+                        </ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col size="12">
+                    <ion-item>
+                        <ion-label color="darkBlue" position="floating">
+                            <ion-text>
+                                Contraseña
+                            </ion-text>
+                        </ion-label>
+                        <ion-input type="password" inputmode="password" formControlName="password" color="darkBlue" clearOnEdit>
+                        </ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col size="12">
+                    <ion-item>
+                        <ion-label color="darkBlue" position="floating">
+                            <ion-text>
+                                Confirmar contraseña
+                            </ion-text>
+                        </ion-label>
+                        <ion-input type="password" inputmode="password" color="darkBlue" formControlName="password_confirmation" clearOnEdit>
+                        </ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+
+        <ion-grid style="padding-top: 2vw;">
+            <ion-row>
+                <ion-col size="12">
+                    <ion-button expand="block" type="submit">
+                        <ion-text color="light">
+                            Registrarme con email
+                        </ion-text>
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col size="12">
+                    <ion-button expand="block" (click)="facebookRegister()">
+                        <ion-icon slot="start" name="logo-facebook" color="light">
+                        </ion-icon>
+                        <ion-text color="light">
+                            Registrarme con facebook
+                        </ion-text>
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </form>
+</ion-content>

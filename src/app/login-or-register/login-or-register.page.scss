@@ -1,0 +1,20 @@
+ion-content{
+  --background: linear-gradient(to top, var(--ion-color-primary-tint), var(--ion-color-tertiary)) !important;
+  //--background: white !important;
+}
+
+ion-grid{
+  padding-left: 20vw;
+  padding-right: 20vw;
+}
+
+.logo{
+  position: absolute;
+  top: 30%;
+  left: 25%;
+  width: 50vw;
+}
+
+ion-text{
+  color:var(--ion-color-darkBlue-tint);
+}

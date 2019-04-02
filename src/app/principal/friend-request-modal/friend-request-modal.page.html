@@ -1,0 +1,26 @@
+<ion-content scrollY="false">
+
+    <ion-row align-items-center justify-content-center>
+        <ion-col size="12" style="text-align:center">
+            <ion-text class="title" style="margin:auto">
+                <strong>{{nombre}}</strong> quiere ser tu amigo!
+            </ion-text>
+        </ion-col>
+        <br><br><br><br>
+        <ion-col size="6" style="text-align:center">
+            <ion-button expand="block" color="danger" (click)="rechazarSolicitud()">
+                <ion-text color="light">
+                    Rechazar
+                </ion-text>
+            </ion-button>
+        </ion-col>
+        <ion-col size="6" style="text-align:center">
+            <ion-button expand="block" (click)="aceptarSolicitud()">
+                <ion-text color="light">
+                    Aceptar solicitud
+                </ion-text>
+            </ion-button>
+        </ion-col>
+    </ion-row>
+
+</ion-content>

@@ -1,5 +1,7 @@
 {
   "name": "meditacion-ionic-4-limpia",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

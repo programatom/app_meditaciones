@@ -1,0 +1,24 @@
+ion-grid{
+  padding-top: 30vw;
+  padding-left: 14vw;
+  padding-right: 14vw;
+}
+
+ion-content{
+  //background: linear-gradient(to top, var(--ion-color-primary-tint), var(--ion-color-tertiary)) !important;
+  --background: white !important;
+}
+
+ion-input{
+  --background: transparent;
+}
+
+ion-item{
+  --background: transparent;
+}
+ion-img{
+  position: absolute;
+  left: 33%;
+  top: 10vw;
+  width:30vw;
+}

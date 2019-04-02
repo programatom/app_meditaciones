@@ -1,0 +1,180 @@
+<ion-content padding>
+
+    <ion-item lines="none">
+
+        <img [src]="photoURL" slot="start">
+        <ion-text color="darkBlue" style="font-size:5vw; margin-top:2vw">
+            {{userDataServ.userData.nombre}}
+        </ion-text>
+        <ion-icon name="settings" slot="end" style="font-size:10vw" color="medium">
+        </ion-icon>
+    </ion-item>
+
+    <ion-grid>
+        <ion-row>
+            <ion-col size="1">
+                <ion-icon color="primary" name="ios-timer" style="font-size:8vw;"></ion-icon>
+            </ion-col>
+            <ion-col style="padding-left:3vw; padding-top:3.5vw">
+                <ion-text color="darkBlue" style="font-size:5.5vw;">
+                    Tiempo meditado
+                </ion-text>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <ion-text color="darkBlue" style="font-size:5vw;">
+                    <strong style="font-size:9vw;padding-right:1vw;">{{tiempoMeditado}}</strong> {{medidaTiempoMeditado}}
+                </ion-text>
+            </ion-col>
+        </ion-row>
+        <br>
+        <ion-row>
+            <ion-col size="1">
+                <ion-icon color="primary" name="ios-headset" style="font-size:8vw;"></ion-icon>
+            </ion-col>
+            <ion-col style="padding-left:3vw; padding-top:3.5vw">
+                <ion-text color="darkBlue" style="font-size:5.5vw;">
+                    Sesiones completadas
+                </ion-text>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <ion-text color="darkBlue" style="font-size:5vw;">
+                    <strong style="font-size:9vw;padding-right:1vw;">{{userData.meditaciones_escuchadas}}</strong> sesiones
+                </ion-text>
+            </ion-col>
+        </ion-row>
+        <br>
+        <ion-row>
+            <ion-col style="padding:0">
+                <ion-row>
+                    <ion-col size="2">
+                        <ion-icon color="primary" name="ios-trophy" style="font-size:8vw;"></ion-icon>
+                    </ion-col>
+                    <ion-col style="padding-left:3vw; padding-top:3.5vw">
+                        <ion-text color="darkBlue" style="font-size:5.5vw;">
+                            Puntaje
+                        </ion-text>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>
+                        <ion-text color="darkBlue" style="font-size:5vw;">
+                            <strong style="font-size:9vw;padding-right:1vw;">{{puntaje}}</strong> puntos
+                        </ion-text>
+                    </ion-col>
+                </ion-row>
+            </ion-col>
+            <ion-col align-self-center text-center style="padding:0">
+                <ion-row style="padding:0">
+                    <ion-col size="12">
+                        <img style="height:25vw;" src="assets/imgs/nivel1.jpg">
+                    </ion-col>
+                    <ion-col size="12">
+                        <ion-text color="darkBlue" style="font-size:3vw;">
+                            Buddha principiante
+                        </ion-text>
+                    </ion-col>
+                </ion-row>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+
+    <ion-item>
+        <ion-text color="darkBlue" style="font-size:5.5vw;">
+            Meditamigos
+        </ion-text>
+        <ion-icon name="add-circle" slot="end" style="font-size:8.5vw;" color="primary" (click)="abrirEmailModal()"></ion-icon>
+    </ion-item>
+    <div *ngFor="let amigo of amigos; let i = index">
+        <!-- AMIGOS ACEPTADOS -->
+        <ion-item *ngIf="amigo.estado == 'aceptado'">
+            <ion-text color="darkBlue" style="font-size:5.0vw;">
+                {{amigo.user.name}}
+            </ion-text>
+            <ion-icon [name]="amigo.icono" color="primary" slot="end" (click)="cambiarIconoDeListaDeAmigos(i)">
+            </ion-icon>
+        </ion-item>
+        <!-- DAT AMIGOS ACEPTADOS -->
+
+        <div *ngIf="amigo.estado == 'aceptado' && amigo.icono == 'arrow-dropup'">
+            <ion-grid style="padding:0 ; padding-top:2vw">
+                <ion-row>
+                    <ion-col align-self-center>
+                        <ion-text style="font-size:5.0vw;margin-left:3vw;" color="darkCustom">
+                            <strong>Tiempo meditado</strong>
+                        </ion-text>
+                    </ion-col>
+                    <ion-col align-self-center>
+                        <ion-text style="margin-left: 4vw;font-size:5.5vw;" color="darkCustom">
+                            {{amigo.user_data.tiempo_meditado}}
+                            {{amigo.user_data.medida_tiempo_meditado}}
+                        </ion-text>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col align-self-center>
+                        <ion-text style="font-size:5.0vw;margin-left:3vw;" color="darkCustom">
+                            <strong>Sesiones completadas</strong>
+                        </ion-text>
+                    </ion-col>
+                    <ion-col align-self-center>
+                        <ion-text style="margin-left: 4vw;font-size:5.5vw;" color="darkBlue">
+                            {{amigo.user_data.meditaciones_escuchadas}}
+                        </ion-text>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col align-self-center>
+                        <div style="font-size:5.0vw;margin-left:3vw;" color="darkBlue">
+                            <strong>Puntaje</strong>
+                        </div>
+                    </ion-col>
+                    <ion-col align-self-center>
+                        <ion-text style="margin-left: 4vw;font-size:5.5vw;" color="darkBlue">
+                            {{amigo.user_data.puntaje}}
+                        </ion-text>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>
+                        <ion-button expand="full" color="danger" (click)="eliminarAmigo(i)">Eliminar</ion-button>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </div>
+        <!-- SOLICITUDES RECIBIDAS -->
+        <ion-item *ngIf="amigo.user_receiver_id == userData.id && amigo.estado != 'aceptado'">
+            <ion-text color="darkBlue" style="font-size:5.0vw;">
+                {{amigo.user.name}}
+            </ion-text>
+            <ion-icon name="checkbox" color="success-shade" slot="end" (click)="responderSolicitud('aceptar',i)">
+            </ion-icon>
+            <ion-icon name="close-circle" color="danger-tint" slot="end" (click)="responderSolicitud('rechazar',i)">
+            </ion-icon>
+        </ion-item>
+        <!-- SOLICITUDES ENVIADAS -->
+
+        <ion-item *ngIf="amigo.user_receiver_id != userData.id && amigo.estado != 'aceptado'">
+            <ion-grid style="padding:0 !important">
+                <ion-row>
+                    <ion-col align-self-center>
+                        <ion-text color="darkBlue" style="font-size:5.0vw;">
+                            {{amigo.user.name}}
+                        </ion-text>
+                    </ion-col>
+                    <ion-col align-self-center>
+                        <div style="float:left;font-size:5.5vw;" color="darkCustom">
+                            <ion-text color="primary">Enviado</ion-text>
+                        </div>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </ion-item>
+
+    </div>
+
+</ion-content>

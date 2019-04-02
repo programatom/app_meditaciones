@@ -1,0 +1,21 @@
+ion-content{
+  --background: var(--ion-color-libroMeditacion2) url('../../../../assets/imgs/image-4.png') no-repeat center center / cover;
+}
+
+ion-icon{
+  z-index: 999;
+}
+
+.play-button-circle{
+  background: var(--ion-color-libroMeditacion1);
+}
+
+.play-button-circle:active{
+  transform: translateX(2px)
+  translateY(2px);
+}
+
+ion-slides{
+  background: transparent;
+  height: 100%;
+}

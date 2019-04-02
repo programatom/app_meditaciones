@@ -1,0 +1,26 @@
+<ion-content scrollY="false" style="padding:3vw">
+
+    <ion-row align-items-center justify-content-center>
+        <ion-col size="12" style="text-align:center">
+            <ion-text class="title" style="margin:auto">
+                Ingresa el email de tu meditAmigo!
+            </ion-text>
+        </ion-col>
+        <ion-col size="12" style="text-align:center">
+            <ion-item>
+                <ion-label position="floating" color="primary">
+                    Email
+                </ion-label>
+                <ion-input color="darkBlue" type="text" [(ngModel)]="email"></ion-input>
+            </ion-item>
+        </ion-col>
+        <ion-col size="12" style="text-align:center">
+            <ion-button expand="block" (click)="enviarFriendRequest()">
+                <ion-text color="light">
+                    Enviar solicitud
+                </ion-text>
+            </ion-button>
+        </ion-col>
+    </ion-row>
+
+</ion-content>

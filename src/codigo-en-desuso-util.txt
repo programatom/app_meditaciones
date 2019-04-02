@@ -1,0 +1,75 @@
+download() {
+
+    let indexSlide = this.slides.getActiveIndex();
+    if (indexSlide > this.meditaciones.length - 1) {
+        indexSlide = this.meditaciones.length - 1;
+    };
+
+    if (this.meditaciones[indexSlide].downloaded == "downloaded") {
+        this.toastProv.toastMessageTresTop("Ya descargaste esta meditación! Visualiza tus meditaciones descargadas en la sección de ajustes, en 'Mis descargas'.");
+    } else {
+        if (this.plt.is('cordova')) {
+            if (this.plt.is('ios')) {
+                let directoryIos = this.file.dataDirectory;
+                this.fileTransf(directoryIos);
+            } else if (this.plt.is('android')) {
+                let directoryAndroid = this.file.externalDataDirectory;
+                this.fileTransf(directoryAndroid);
+            }
+        } else {
+
+            let indexSlide = this.slides.getActiveIndex();
+            if (indexSlide > this.meditaciones.length - 1) {
+                indexSlide = this.meditaciones.length - 1;
+            };
+
+            let meditacion: objMeditacion = this.meditaciones[indexSlide];
+            let idMed = meditacion.id;
+
+            this.insertAndInstatiateDownload(indexSlide, "pathRandom", idMed);
+            this.toastProv.toastMessageTresMiddle('Descargando la meditación...');
+        }
+    }
+
+
+}
+
+//----------------------------------------------------------------------------------------
+
+fileTransf(dir) {
+
+    // Que datos necesito despues para en otra pagina acceder a esta categoria,
+    // su orden, el nombre de la meditacion a la que pertence
+
+    let indexSlide = this.slides.getActiveIndex();
+    if (indexSlide > this.meditaciones.length - 1) {
+        indexSlide = this.meditaciones.length - 1;
+    };
+
+    let meditacion: objMeditacion = this.meditaciones[indexSlide];
+
+    let urlMed = meditacion.url;
+    let idMed = meditacion.id;
+    let orden = meditacion.orden;
+    let nombreCat = this.nombreCategoria;
+    let idCat = this.categoria;
+
+    let nombreMedID = "meditacion_" + idMed + "_" + orden + "_" + nombreCat + "_" + idCat + "_.mp3";
+
+    const fileTransferObj: FileTransferObject = this.fileTransfer.create();
+    const urlUri = encodeURI(urlMed);
+
+    let path = dir + nombreMedID;
+    this.toastProv.toastMessageTresTop("Descargando archivo...");
+    this.iconoDownloadColor = "loading";
+    this.meditaciones[indexSlide].downloaded = "loading";
+    fileTransferObj.download(urlUri, path).then(() => {
+
+        this.insertAndInstatiateDownload(indexSlide, path, idMed);
+
+    },
+        (err) => {
+            console.log('Error con el download: ')
+            console.log(err)
+        });
+}
