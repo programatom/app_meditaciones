@@ -1,0 +1,32 @@
+.content{
+  height: 20vw;
+  position:absolute;
+  top:0;
+  width:100%;
+}
+
+.back-icon{
+  position:absolute;
+  left:6vw;
+  top:6vw;
+  font-size: 12vw;
+  color:white;
+}
+
+ion-icon{
+  z-index: 999;
+}
+
+app-loader{
+  z-index: 999;
+  position:absolute;
+  right:6vw;
+  top:6vw;
+}
+.download{
+  position:absolute;
+  right:6vw;
+  top:6vw;
+  font-size: 10vw;
+  color:white;
+}
