@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalStorageService } from '../services/services.index';
+import { LocalStorageService, DownloadService } from '../services/services.index';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { ObjUserData } from 'src/interfaces/interfaces';
 import { PuntajeCalculatorService } from '../services/puntaje-calculator/puntaje-calculator.service';
 import { ModalController } from '@ionic/angular';
 import { EmailModalPage } from './email-modal/email-modal.page';
+import { CategoriasNavigatorService } from '../services/categorias-logic/categorias-navigator.service';
 
 @Component({
     selector: 'app-perfil',
@@ -27,29 +28,90 @@ export class PerfilPage implements OnInit {
 
     amigos = [];
 
+    categoriasDescargadas:Array<{
+      "nombre":string
+    }> = [];
+
+    categoriasNombres = {
+      "categoria_a":"Sonidos Binaurales"
+    }
+
+    slidesOptions;
+
 
     constructor(public localStorageServ: LocalStorageService,
                 public userDataServ: UserDataService,
                 public puntajeServ: PuntajeCalculatorService,
-                private modalCtrl: ModalController) {
+                private modalCtrl: ModalController,
+                private downloadServ: DownloadService,
+                private categoriaNavigation: CategoriasNavigatorService) {
           this.userData = this.userDataServ.userData;
           this.token = this.userDataServ.token;
+          this.slidesOptions = {
+            "slidesPerView" : 3
+          }
     }
 
     ionViewDidEnter(){
       this.calcularPuntajeYNivelUsuario();
       this.procesarTiempoMeditado();
+      this.buscarMediaDescargada();
     }
 
     ngOnInit() {
       this.calcularPuntajeNivelAmigosAgregarHTMLVariablesProcesarTiempo();
+    }
 
+    buscarMediaDescargada(){
+      let directory = this.downloadServ.getDeviceDirectory();
+      if(directory == null){
+        // Desktop buscar en desktop directorios con categoria
+        this.mediaDesktopCase();
+      }else{
+        this.mediaDeviceCase(directory);
+      }
+    }
+
+    irACategoria(categoria){
+      this.categoriaNavigation.categoriasSwitchNavigation(categoria)
+    }
+
+    mediaDeviceCase(directory){
+      this.categoriasDescargadas = [];
+      this.downloadServ.getCategoriaDirectory("", directory).then((responseDirectory)=>{
+        if(responseDirectory["found"]){
+          console.log("Respuesta directory" + JSON.stringify(responseDirectory["dir"]));
+          let directories = responseDirectory["dir"];
+          for(let i = 0; i < directories.length; i ++){
+            let nombre = this.categoriasNombres[directories[i].name];
+            this.categoriasDescargadas.push({
+              "nombre": nombre,
+            });
+          }
+        }
+      })
+    }
+
+    mediaDesktopCase(){
+      let keys = Object.keys(this.localStorageServ.localStorageObj);
+      for(let i = 0; i < keys.length; i ++){
+        let key = keys[i];
+        let split = key.split("_");
+        if(split.length > 0){
+          if(split[0] == "categoria"){
+            let nombreCategoria = this.categoriasNombres[key];
+            this.categoriasDescargadas.push({
+              "nombre": nombreCategoria,
+            });
+          }
+        }
+      }
     }
 
     calcularPuntajeNivelAmigosAgregarHTMLVariablesProcesarTiempo(){
 
-      this.userData.amigos.enviadas.concat(this.userData.amigos.recibidas);
-      this.amigos = this.userData.amigos.enviadas;
+
+      this.amigos = this.userData.amigos.enviadas.concat(this.userData.amigos.recibidas);;
 
       for(let i = 0; i < this.amigos.length; i ++){
         var amigoData = this.amigos[i].user_data;

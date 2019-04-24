@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { PerfilPage } from './perfil.page';
 import { PerfilPageRoutingModule } from './perfil.router.module';
 import { EmailModalPageModule } from './email-modal/email-modal.module';
+import { ComponentsModule } from '../components/components.module';
 
 
 
@@ -17,7 +18,8 @@ import { EmailModalPageModule } from './email-modal/email-modal.module';
     FormsModule,
     IonicModule,
     PerfilPageRoutingModule,
-    EmailModalPageModule
+    EmailModalPageModule,
+    ComponentsModule
   ],
   declarations: [PerfilPage]
 })

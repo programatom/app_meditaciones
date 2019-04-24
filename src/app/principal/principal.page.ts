@@ -22,9 +22,7 @@ export class PrincipalPage implements OnInit {
         private popupLogicServ: PopupLogicService,
         private modalCtrl: ModalController,
         private categoriaLogic: CategoriasLogicService,
-        private categoriaNavigation: CategoriasNavigatorService,
-        private modalCategoriasSlideServ: ModalCategoriasSlidesService,
-        private navCtrl: NavController) {
+        private categoriaNavigation: CategoriasNavigatorService) {
         this.userData = this.userDataServ.userData;
     }
 

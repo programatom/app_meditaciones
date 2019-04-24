@@ -76,7 +76,6 @@ export class RegisterPage implements OnInit {
     registerFN(data){
       console.log("Registración de: " , data)
       this.auth.register(data).subscribe((respuesta)=>{
-        console.log(respuesta);
         if(respuesta.status == "success"){
           let token = respuesta.data.api_token;
           let user = respuesta.data;

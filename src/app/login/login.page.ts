@@ -35,10 +35,11 @@ export class LoginPage implements OnInit {
 
   emailLogin(){
     this.authServ.login(this.login.value).subscribe((respuesta)=>{
-      console.log(respuesta)
+      console.log(JSON.stringify(respuesta));
       if(respuesta.status == "success"){
         let token = respuesta.data.api_token;
         let nombre = respuesta.data.name;
+        console.log("SE INSTANCIA EL TOKEN EN EL LS")
         this.localStorageServ.insertAndInstantiateValue("token" , token).then(()=>{
           this.userDataServ.gatherUserData(false).then(()=>{
             this.toastServ.presentToast("Bienvenido " + nombre, "success");
@@ -48,6 +49,10 @@ export class LoginPage implements OnInit {
       }else{
         var mensajeError = "El email o la contraseña son incorrectos";
         this.toastServ.presentToast(mensajeError, "error");
+      }
+
+      (err)=>{
+        console.log("Error con el servicio de login: ", JSON.stringify(err))
       }
     })
   }

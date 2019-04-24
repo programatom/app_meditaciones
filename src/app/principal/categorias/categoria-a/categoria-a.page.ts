@@ -6,6 +6,7 @@ import { Timer } from 'easytimer.js';
 import { UserDataService } from 'src/app/services/user-data/user-data.service';
 import { DOCUMENT } from '@angular/platform-browser';
 import { URL_ASSETS } from 'src/config/config';
+import { DownloadService, LocalStorageService, ToastService } from 'src/app/services/services.index';
 
 @Component({
     selector: 'app-categoria-a',
@@ -46,29 +47,80 @@ export class CategoriaAPage implements OnInit {
 
     resumeAfterTouchStart: boolean;
 
-    audios = [];
+    medias = [];
     progressBarElement: any;
 
     isNewView = false;
     loaderElement:any;
+
+    downloadIconColor:string = "light";
     constructor(private navCtrl: NavController,
         private categoriasLogic: CategoriasLogicService,
         private userData: UserDataService,
         private event: Events,
         @Inject(DOCUMENT) private _document: Document,
-        private nativeAudio: NativeAudio) {
+        private downloadServ: DownloadService,
+        private toastServ: ToastService,
+        private localStorageServ: LocalStorageService) {
         this.progressBarInteractionSubscriptions();
         this.audioSubscriptions();
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+      this.categoria = "categoria_a";
       this.processUrls(this.categoriasLogic.audiosCategoria);
       this.initProgressBarAndLoader();
       this.slideSubscriptions();
-      if(this.audios[0] != undefined){
-        this.initNewAudio(this.audios[0].url, 0);
+
+      if(this.medias[0] != undefined){
+        this.initNewAudio(this.medias[0].url, 0);
+      }
+
+      let directory = this.downloadServ.getDeviceDirectory();
+
+      if(directory == null){
+        if(this.localStorageServ.localStorageObj[this.categoria] != undefined){
+          this.downloadIconColor = "success";
+        }else{
+          this.downloadIconColor = "light";
+        }
+      }else{
+        let responseDirectory = await this.downloadServ.getCategoriaDirectory(this.categoria, directory);
+        if(responseDirectory["found"]){
+          this.downloadIconColor = "success";
+          let filesArray:any = this.downloadServ.generateFilePathArray(this.medias, this.categoria);
+          let resultFiles = await this.downloadServ.switchCordovaAndDataDirectories(filesArray,this.categoria);
+          console.log("Resultado de files en categoria: " + resultFiles)
+        }else{
+          this.downloadIconColor = "light";
+        }
+      }
+
+    }
+
+    download(){
+      if(this.downloadIconColor == "success"){
+        let header = "Confirmación";
+        let subHeader = "¿Desea eliminar la categoría descargada?";
+        let buttons = [{
+          text:"Cancelar",
+          role:"cancel"
+        },{
+          text:"Aceptar",
+          handler:()=>{
+            this.downloadIconColor = "light";
+            this.downloadServ.deleteDirectory(this.categoria);
+          }
+        }];
+        this.toastServ.presentAlert(header, subHeader, undefined, buttons);
+      }else{
+        let filesArray:any = this.downloadServ.generateFilePathArray(this.medias, this.categoria);
+        this.downloadServ.switchCordovaAndDataDirectories(filesArray, this.categoria);
+        this.downloadIconColor = "success"
       }
     }
+
+
 
     processUrls(urls:Array<any>){
       urls.filter((value)=>{
@@ -81,7 +133,7 @@ export class CategoriaAPage implements OnInit {
     }
 
     pushAudioToMainArray(url){
-      this.audios.push({
+      this.medias.push({
         "url": URL_ASSETS + url,
         "icon":"play",
         "animateUp" :false,
@@ -94,14 +146,13 @@ export class CategoriaAPage implements OnInit {
     }
 
     initProgressBarAndLoader(){
-      console.log(this.audios)
-      let length = this.audios.length;
+      let length = this.medias.length;
       for (let i = 0; i < length; i ++){
         setTimeout(()=>{
-          this._document.getElementById(this.audios[i].id_loader).style.visibility = "hidden";
-          this._document.getElementById(this.audios[i].id_minutero).style.visibility = "hidden";
-          this._document.getElementById(this.audios[i].id_progress).style.visibility = "hidden";
-        },50)
+          this._document.getElementById(this.medias[i].id_loader).style.visibility = "hidden";
+          this._document.getElementById(this.medias[i].id_minutero).style.visibility = "hidden";
+          this._document.getElementById(this.medias[i].id_progress).style.visibility = "hidden";
+        },100)
       }
     }
 
@@ -110,13 +161,13 @@ export class CategoriaAPage implements OnInit {
 
           this.isNewView = true;
 
-          if (this.audios[this.indexPlay] != undefined) {
+          if (this.medias[this.indexPlay] != undefined) {
 
               let indexSlide = this.slides.getActiveIndex();
 
               // SE VA Y EL AUDIO ESTA CORRIENDO
-              if (indexSlide > this.audios.length - 1) {
-                  indexSlide = this.audios.length - 1;
+              if (indexSlide > this.medias.length - 1) {
+                  indexSlide = this.medias.length - 1;
               };
 
               if (!this.audio.paused) {
@@ -128,9 +179,9 @@ export class CategoriaAPage implements OnInit {
     }
 
     ocultarElementosDeUnAudio(){
-      this._document.getElementById(this.audios[this.indexPlay].id_loader).style.visibility = "hidden";
-      this._document.getElementById(this.audios[this.indexPlay].id_minutero).style.visibility = "hidden";
-      this._document.getElementById(this.audios[this.indexPlay].id_progress).style.visibility = "hidden";
+      this._document.getElementById(this.medias[this.indexPlay].id_loader).style.visibility = "hidden";
+      this._document.getElementById(this.medias[this.indexPlay].id_minutero).style.visibility = "hidden";
+      this._document.getElementById(this.medias[this.indexPlay].id_progress).style.visibility = "hidden";
     }
 
     pausarAudio(){
@@ -142,7 +193,7 @@ export class CategoriaAPage implements OnInit {
     })
       */
       this.audio.pause();
-      this.audios[this.indexPlay].icon = "play";
+      this.medias[this.indexPlay].icon = "play";
       this.grabarSegundosMeditados();
     }
 
@@ -162,12 +213,12 @@ export class CategoriaAPage implements OnInit {
 
 
             this.timer.start();
-            this.audios[index].icon = "pause";
-            this.audios[index].animateUp = true;
+            this.medias[index].icon = "pause";
+            this.medias[index].animateUp = true;
             setTimeout(()=>{
-              this._document.getElementById(this.audios[index].id_progress).style.visibility = "visible";
-              this._document.getElementById(this.audios[index].id_minutero).style.visibility = "visible";
-              this.audios[index].fadeIn = true;
+              this._document.getElementById(this.medias[index].id_progress).style.visibility = "visible";
+              this._document.getElementById(this.medias[index].id_minutero).style.visibility = "visible";
+              this.medias[index].fadeIn = true;
             },1500)
 
             // Puede ser un url nuevo o uno ya corriendo
@@ -258,7 +309,7 @@ export class CategoriaAPage implements OnInit {
 
             this.userData.updateUserData({
                 "segundos_meditados": segundosTotales
-            }).subscribe((data) => {
+            }).subscribe(() => {
                 console.log("Segundos meditados: " + segundosTotales);
                 resolve();
             });
@@ -281,16 +332,16 @@ export class CategoriaAPage implements OnInit {
             // LOADER
 
             if (this.isPlaying) {
-                this._document.getElementById(this.audios[this.indexPlay].id_loader).style.visibility = "visible";
+                this._document.getElementById(this.medias[this.indexPlay].id_loader).style.visibility = "visible";
                 this.timeoutLoader = setTimeout(() => {
-                    this._document.getElementById(this.audios[this.indexPlay].id_loader).style.visibility = "hidden";
+                    this._document.getElementById(this.medias[this.indexPlay].id_loader).style.visibility = "hidden";
                 }, 1000);
             }
         });
 
         this.audio.addEventListener("ended", () => {
 
-            this.audios[this.indexPlay].icon = "med-play";
+            this.medias[this.indexPlay].icon = "med-play";
 
             // ABRIR PAGINAS DE NOTAS DE USUARIO !
 

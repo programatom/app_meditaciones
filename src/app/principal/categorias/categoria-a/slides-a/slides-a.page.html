@@ -14,7 +14,9 @@
     <ion-slides #slidesElem>
         <ion-slide *ngFor="let slide of slides" (click)="nextSlide()">
             <ion-text class="texto-slide">
+              <p>
                 {{slide.texto}}
+              </p>
             </ion-text>
         </ion-slide>
     </ion-slides>

@@ -2,9 +2,12 @@ ion-content{
   --background: var(--ion-color-libroMeditacion2) url('../../../../assets/imgs/image-4.png') no-repeat center center / cover;
 }
 
-ion-icon{
-  z-index: 999;
+ion-toggle{
+  position:absolute;
+  right:7vw;
+  top: 3vw;
 }
+
 
 .play-button-circle{
   background: var(--ion-color-libroMeditacion1);
@@ -14,6 +17,21 @@ ion-icon{
   transform: translateX(2px)
   translateY(2px);
 }
+
+.frases{
+  position:absolute;
+  bottom: 13vw;
+  text-align: center;
+  width: 100%;
+  z-index: 999;
+}
+
+.posicion-texto-explicativo{
+  position: absolute;
+  bottom: 3vw;
+  text-align: center;
+  width: 100%;
+ }
 
 ion-slides{
   background: transparent;

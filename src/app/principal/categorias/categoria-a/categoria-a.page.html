@@ -1,36 +1,37 @@
+<app-toolbar-categoria (dismiss) = "dismiss()" (download)="download($event)" [downloadIconColor]="downloadIconColor">
+
+</app-toolbar-categoria>
 <ion-content padding scrollY="false">
-
-  <div class="zona-libre-de-click">
-      <ion-icon name="arrow-back" color="light" class="back-icon" (click)="dismiss()">
-      </ion-icon>
-  </div>
-
-
     <ion-slides #slides>
-        <ion-slide *ngFor="let audio of audios; let i = index">
+        <ion-slide *ngFor="let media of medias; let i = index">
             <ion-row>
                 <ion-col size="12">
-                    <div class="play-button-circle posicion-play" [ngClass]="{'moveUp': audio.animateUp}"(click)="playPause(audio.url, i )">
-                        <ion-icon [src]="'assets/icon/'+ audio.icon +'.svg'" color="libroMeditacion3">
+                    <div class="play-button-circle posicion-play" [ngClass]="{'moveUp': media.animateUp}"(click)="playPause(media.url, i )">
+                        <ion-icon [src]="'assets/icon/'+ media.icon +'.svg'" color="libroMeditacion3">
                         </ion-icon>
                     </div>
                 </ion-col>
 
                 <ion-col size="12" class="center">
                   <app-progress-bar [progress]="progresoBar" color="rgb(234, 185, 167)"
-                                     attr.id="{{audio.id_progress}}"
-                                     [ngClass]="{'fadeIn': audio.fadeIn}">
+                                     attr.id="{{media.id_progress}}"
+                                     [ngClass]="{'fadeIn': media.fadeIn}">
                   </app-progress-bar>
                 </ion-col>
-                <ion-col size="12" class="center" [ngClass]="{'fadeIn': audio.fadeIn}">
-                  <ion-text color="light" attr.id="{{audio.id_minutero}}">{{minutero}}</ion-text>
+                <ion-col size="12" class="center" [ngClass]="{'fadeIn': media.fadeIn}">
+                  <ion-text color="light" attr.id="{{media.id_minutero}}">{{minutero}}</ion-text>
                 </ion-col>
                 <ion-col size="12" class="center">
-                  <app-loader categoria = "a" attr.id="{{audio.id_loader}}"></app-loader>
+                  <app-loader categoria = "a" attr.id="{{media.id_loader}}"></app-loader>
                 </ion-col>
-
             </ion-row>
+            <div class="posicion-texto-explicativo" *ngIf="i == 0">
+                <ion-text color="light">
+                    Deslizar hacia la derecha
+                </ion-text>
+            </div>
         </ion-slide>
     </ion-slides>
+
 
 </ion-content>

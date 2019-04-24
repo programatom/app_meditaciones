@@ -42,7 +42,7 @@ export class LocalStorageService {
 
         // Tiro lengthKeys tareas asincronas
 
-        this.insertAndInstantiateValue(key, value).then((asyncEnd) => {
+        this.insertAndInstantiateValue(key, value).then(() => {
           asyncEndCount = asyncEndCount + 1;
           if (asyncEndCount == lengthArray) {
             resolve(this.objResponse = {

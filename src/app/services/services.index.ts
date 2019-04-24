@@ -1,3 +1,4 @@
+export { DownloadService } from './download/download.service';
 export { PopupLogicService } from './popup-logic/popup-logic.service';
 export { FriendsService } from './friends/friends.service';
 export { LocalStorageService } from './local-storage/local-storage.service';

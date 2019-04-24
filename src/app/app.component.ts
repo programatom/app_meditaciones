@@ -45,10 +45,12 @@ export class AppComponent {
             console.log(respuesta);
             if(respuesta.status == "success"){
               this.userDataServ.gatherUserData(false).then(()=>{
-                this.navCtrl.navigateForward("/tabs/principal").then(()=>{
-                  this.statusBar.styleLightContent();
-                  this.splashScreen.hide();
-                });
+                this.localStorageServ.searchAndInstantiateAllKeysInStorage().then(()=>{
+                  this.navCtrl.navigateForward("/tabs/principal").then(()=>{
+                    this.statusBar.styleLightContent();
+                    this.splashScreen.hide();
+                  });
+                })
               });
             }else{
               this.redirectToLoginOrRegisterPage();

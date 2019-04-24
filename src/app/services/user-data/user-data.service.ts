@@ -22,14 +22,13 @@ export class UserDataService {
         if (isRegistration) {
           this.initializeUserDataObj(user.name, user.email, user.id);
           resolve();
-        }
-        else {
+        } else {
           this.getUserData().subscribe((userDataResp) => {
             console.log(userDataResp);
             let userData = userDataResp.data.user_data;
             let user = userDataResp.data.user;
             this.getFriends().subscribe((amigosResp) => {
-              console.log(amigosResp);
+              console.log("Respuesta de la busqueda de amigos: " , amigosResp);
               let amigos = amigosResp.data;
               this.getInitializedCategories().subscribe((initCatResp)=>{
                 let initCats = initCatResp.data;
@@ -37,7 +36,7 @@ export class UserDataService {
                   let initMeds = initMedResp.data;
                   await this.initializeUserDataObj(user.name, user.email, user.id, userData.segundos_meditados, userData.puntaje, userData.meditaciones_escuchadas, amigos, initCats, initMeds);
                   console.log("Se inicializo el user data");
-                  resolve()
+                  resolve();
 
                 })
               })
