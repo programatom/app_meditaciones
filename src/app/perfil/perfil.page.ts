@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalStorageService, DownloadService } from '../services/services.index';
+import { LocalStorageService, DownloadService, FriendsService } from '../services/services.index';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { ObjUserData } from 'src/interfaces/interfaces';
 import { PuntajeCalculatorService } from '../services/puntaje-calculator/puntaje-calculator.service';
@@ -44,7 +44,8 @@ export class PerfilPage implements OnInit {
                 public puntajeServ: PuntajeCalculatorService,
                 private modalCtrl: ModalController,
                 private downloadServ: DownloadService,
-                private categoriaNavigation: CategoriasNavigatorService) {
+                private categoriaNavigation: CategoriasNavigatorService,
+                private friendsServ: FriendsService) {
           this.userData = this.userDataServ.userData;
           this.token = this.userDataServ.token;
           this.slidesOptions = {
@@ -61,6 +62,7 @@ export class PerfilPage implements OnInit {
     ngOnInit() {
       this.calcularPuntajeNivelAmigosAgregarHTMLVariablesProcesarTiempo();
     }
+
 
     buscarMediaDescargada(){
       let directory = this.downloadServ.getDeviceDirectory();
@@ -94,6 +96,7 @@ export class PerfilPage implements OnInit {
 
     mediaDesktopCase(){
       let keys = Object.keys(this.localStorageServ.localStorageObj);
+      this.categoriasDescargadas = [];
       for(let i = 0; i < keys.length; i ++){
         let key = keys[i];
         let split = key.split("_");
@@ -114,17 +117,19 @@ export class PerfilPage implements OnInit {
       this.amigos = this.userData.amigos.enviadas.concat(this.userData.amigos.recibidas);;
 
       for(let i = 0; i < this.amigos.length; i ++){
-        var amigoData = this.amigos[i].user_data;
-        var puntaje = this.puntajeServ.calcularPuntaje(amigoData.segundos_meditados, amigoData.meditaciones_escuchadas);
-        var nivel = this.puntajeServ.calcularNivel(puntaje);
+        if(this.amigos[i].estado == "aceptado"){
+          var amigoData = this.amigos[i].user_data;
+          var puntaje = this.puntajeServ.calcularPuntaje(amigoData.segundos_meditados, amigoData.meditaciones_escuchadas);
+          var nivel = this.puntajeServ.calcularNivel(puntaje);
 
-        var tiempoMedidaObj = this.convertidorDeTiempo(amigoData.segundos_meditados);
-        this.amigos[i].user_data.tiempo_meditado = tiempoMedidaObj.tiempo;
-        this.amigos[i].user_data.medida_tiempo_meditado = tiempoMedidaObj.medida;
+          var tiempoMedidaObj = this.convertidorDeTiempo(amigoData.segundos_meditados);
+          this.amigos[i].user_data.tiempo_meditado = tiempoMedidaObj.tiempo;
+          this.amigos[i].user_data.medida_tiempo_meditado = tiempoMedidaObj.medida;
 
-        this.amigos[i].user_data.puntaje = puntaje;
-        this.amigos[i].user_data.nivel = nivel;
-        this.amigos[i].icono = "arrow-dropdown";
+          this.amigos[i].user_data.puntaje = puntaje;
+          this.amigos[i].user_data.nivel = nivel;
+          this.amigos[i].icono = "arrow-dropdown";
+        }
       }
       console.log(this.amigos)
     }
@@ -151,6 +156,13 @@ export class PerfilPage implements OnInit {
     async abrirEmailModal(){
       let modal = await this.emailModal();
       modal.present();
+      modal.onDidDismiss().then((val)=>{
+        let role = val.role;
+        if(role == "agregar_amigo"){
+          let data = val.data;
+          this.amigos.push(data);
+        }
+      })
     }
 
     async emailModal(){
@@ -186,6 +198,34 @@ export class PerfilPage implements OnInit {
                 "tiempo": tiempo
             };
         }
+    }
+
+
+
+    responderSolicitud(action, index){
+      let id = this.amigos[index].id;
+
+      switch(action){
+        case "aceptar":
+        this.amigos[index].estado = "aceptado";
+        this.friendsServ.updateSolicitud({
+          "id": id,
+          "data":{
+            "estado":"aceptado"
+          }
+        }, this.token).subscribe((respuesta)=>{
+          console.log(respuesta)
+        })
+        break;
+        case "rechazar":
+        this.amigos.splice(index,1);
+        this.friendsServ.rechazarSolicitud({
+          "id" : id
+        },this.token).subscribe((respuesta)=>{
+          console.log(respuesta);
+        });
+        break;
+      }
     }
 
 }

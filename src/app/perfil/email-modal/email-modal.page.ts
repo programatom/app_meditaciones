@@ -31,8 +31,8 @@ export class EmailModalPage implements OnInit {
     this.friendsServ.enviarFriendRequest(data, this.token).subscribe((respuesta)=>{
       console.log(respuesta);
       if(respuesta.status == "success"){
-        this.toastServ.presentToast("Se envió la solicitud con éxito" , "success")
-        this.modalCtrl.dismiss();
+        this.toastServ.presentToast("Se envió la solicitud con éxito" , "success");
+        this.modalCtrl.dismiss(respuesta.data,"agregar_amigo");
       }else{
         let keys = Object.keys(respuesta.data);
         this.toastServ.presentToast(respuesta.data[keys[0]], "error");

@@ -18,7 +18,9 @@ export class FriendsService {
     return this.http.httpPost(url, data, token);
   }
 
-  rechazarSolicitud(data, token){
+  rechazarSolicitud(data:{
+    id
+  }, token){
     let url = URL_SERVICES + "rechazarSolicitud";
     return this.http.httpPost(url, data, token);
   }

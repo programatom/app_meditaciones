@@ -25,6 +25,7 @@ export interface ObjUserData{
 
 export interface ObjAmigo{
   estado:string
+  id
   user_data:{
     segundos_meditados:number
     puntaje:number

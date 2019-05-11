@@ -305,7 +305,7 @@ export class CategoriaAPage implements OnInit {
             let segundosMeditadosSesion = this.timer.getTimeValues().seconds;
             this.timer.stop();
             let segundosTotales = segundosMeditadosUser + segundosMeditadosSesion;
-            segundosMeditadosUser = segundosTotales;
+            this.userData.userData.segundos_meditados = segundosTotales;
 
             this.userData.updateUserData({
                 "segundos_meditados": segundosTotales
