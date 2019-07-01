@@ -23,7 +23,13 @@ export class CategoriasNavigatorService {
             });
             break;
 
-        case "categoria_b": this.categoria_b(); break;
+        case "categoria_b":
+            this.categoriaLogic.fetchAudiosCategoria(categoria).subscribe(async (audios)=>{
+              console.log("Audios : ", audios)
+              this.categoriaLogic.audiosCategoria = audios.data;
+              this.navCtrl.navigateForward("/categoria-b");
+            });
+            break;
         case "categoria_c": this.categoria_c(); break;
     }
   }
@@ -35,16 +41,14 @@ export class CategoriasNavigatorService {
         this.navCtrl.navigateForward("/slides-a");
         break;
 
-        case "categoria_b": this.categoria_b(); break;
+        case "categoria_b":
+        this.navCtrl.navigateForward("/slides-b");
+        break;
+
         case "categoria_c": this.categoria_c(); break;
     }
   }
 
-
-
-  categoria_b() {
-      return true
-  }
   categoria_c() {
       return true
   }

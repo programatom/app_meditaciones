@@ -61,6 +61,7 @@ export class PrincipalPage implements OnInit {
 
     checkInitializedCategorie(categoria) {
         let isInit = this.categoriaLogic.checkInitializedCategorie(categoria);
+        console.log("Categoria is init: " + isInit)
         if (isInit) {
           this.categoriaNavigation.categoriasSwitchNavigation(categoria);
         } else {

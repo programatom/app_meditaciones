@@ -52,10 +52,11 @@ export class CategoriaAPage implements OnInit {
       this._CL.processUrls(this.medias);
       this._CL.initProgressBarAndLoader(this.medias);
       this._CL.slideSubscriptions(this.slides,  this.interval, this.audio, this.medias, this.timer);
-      this._CL.init(this.medias, this.audio, this.downloadIconColor, this.categoria);
+      this._CL.init(this.medias, this.audio, this.downloadIconColor, this.categoria, (iconColor)=>{
+        this.downloadIconColor = iconColor;
+      });
       this._CL.audioSubscriptions(this.audio, this.medias, this.interval);
     }
-
 
     download(){
       if(this.downloadIconColor == "success"){
@@ -79,7 +80,6 @@ export class CategoriaAPage implements OnInit {
       }
     }
 
-
     pausarAudio(){
       this._CL.pausarAudio(this.interval, this.audio, this.medias, this.timer);
     }
@@ -87,8 +87,6 @@ export class CategoriaAPage implements OnInit {
     dismiss() {
         this.navCtrl.navigateRoot("/tabs/principal");
     }
-
-
 
     playPause(url, index) {
         // Puede ser una pausa o un play
@@ -103,8 +101,6 @@ export class CategoriaAPage implements OnInit {
                            });
 
     }
-
-
 
     ngOnDestroy() {
         // Me tengo que desubscribir de los eventos

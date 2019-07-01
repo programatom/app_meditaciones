@@ -8,6 +8,8 @@ const routes: Routes = [
   { path: 'register', loadChildren: './register/register.module#RegisterPageModule' },
   { path: 'categoria-a', loadChildren: './principal/categorias/categoria-a/categoria-a.module#CategoriaAPageModule' },
   { path: 'slides-a', loadChildren: './principal/categorias/categoria-a/slides-a/slides-a.module#SlidesAPageModule' },
+  { path: 'categoria-b', loadChildren: './principal/categorias/categoria-b/categoria-b.module#CategoriaBPageModule' },
+  { path: 'slides-b', loadChildren: './principal/categorias/categoria-b/slides-b/slides-b.module#SlidesBPageModule' },
 
 ];
 @NgModule({

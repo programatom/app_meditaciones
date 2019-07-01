@@ -42,12 +42,14 @@ export class CategoriasLogicService {
     nombre_categoria:string
   }){
     let url = URL_SERVICES + "inicializarCategoria";
+    console.log("Data enviada a inicializar: ", data)
     this.http.httpPost(url,data,this.token).subscribe((respuesta)=>{
 
       console.log(respuesta);
       this.userDataServ.userData.initCats.push({
         "nombre_categoria": data.nombre_categoria
-      })
+      });
+      
     });
   }
 
@@ -95,7 +97,7 @@ export class CategoriasLogicService {
     let url = URL_SERVICES + "audiosCategoria/" + categoria;
     return this.http.httpGet(url);
   }
-
+  
   progressBarInteractionSubscriptions(audio,
                                       intervalInt,
                                       medias, timer, slides, resumeAfterTouchStart, callbackMinutero){
@@ -154,8 +156,15 @@ export class CategoriasLogicService {
 
 
   processUrls(medias){
-    let validMimes = [".mp4" ,".mp3"];
-    this.audiosCategoria = this.audiosCategoria.filter((value)=> validMimes.includes(value.substr(value.length - 4)));
+    let validMimes = ["mp4" ,"mp3", "aiff"];
+    this.audiosCategoria = this.audiosCategoria.filter((value)=> {
+      console.log
+        if(validMimes.includes(value.split(".")[1])){
+          return true;
+        }else{
+          return false;
+        }
+    });
     this.audiosCategoria.filter((value)=>{
       medias.push({
         "url": URL_ASSETS + value,
@@ -255,7 +264,7 @@ export class CategoriasLogicService {
           });
       }
   }
-  async init(medias, audio, downloadIconColor, categoria){
+  async init(medias, audio, downloadIconColor, categoria, callback){
 
       if(medias[0] != undefined){
         this.initNewAudio(medias[0].url, 0, audio);
@@ -265,8 +274,10 @@ export class CategoriasLogicService {
 
       if(directory == null){
         if(this.localStorageServ.localStorageObj[categoria] != undefined){
+          console.log("Categoria descargada..")
           downloadIconColor = "success";
         }else{
+          console.log("Categoria sin descargar..")
           downloadIconColor = "light";
         }
       }else{
@@ -280,6 +291,7 @@ export class CategoriasLogicService {
           downloadIconColor = "light";
         }
       }
+      callback(downloadIconColor);
   }
 
   initNewAudio(url,index, audio){
