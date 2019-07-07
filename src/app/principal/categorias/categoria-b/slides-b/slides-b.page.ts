@@ -14,13 +14,14 @@ export class SlidesBPage implements OnInit {
   @ViewChild('slidesElem') slidesElem;
 
   slides = [{
-    "texto":"Los sonidos binaurales reducen el estrés, relajan, mejoran la concentración, estimulan la memoria e incluso ayudan a aliviar el dolor crónico. \n\n Se trata de tonos o frecuencias específicas, diferenciadas por magnitudes pequeñas en cada oído que hace al cerebro producir un sonido tridimensional"
+    "texto":"Meditar es silenciarnos para poder escuchar"
+  },
+  {
+    "texto":"Una forma efectiva para acceder al centramiento.  Gracias a la neuroplasticidad el Ser humano tiene la posibilidad de reaprender una forma de vivir en armonía hasta en los escenarios de mayor exigencia y demanda."
   },{
-    "texto":"Las ondas cerebrales  son cinco, y se categorizan mediante el alfabeto griego. Por ejemplo las frecuencias de 4 a 7Hz, como puede verse mediante electroencefalogramas, generan ondas del tipo theta en el cerebro, asociadas al sueño lúcido y a estados de meditación profunda. Mientras que las gamma, de 32 a 100Hz, se asocian con estados de alta cognición. "
+    "texto":'La meditación ayuda a: - Reducir Estrés y ansiedad- Amplificar Bienestar y felicidad- Mejorar Inteligencia mental y emocional - Experimentar Crecimiento personal'
   },{
-    "texto":"El cerebro procesa la diferencia de frecuencia de los sonidos binaurales, lo que produce ondas cerebrales que se corresponden con esta misma diferencia de frecuencia. Esto significa que si escuchamos sonidos que están entre los 8 y los 13 hercios, el cerebro producirá ondas alfa."
-  },{
-    "texto":"Los sonidos de este tipo también permiten que se sincronicen los dos hemisferios del cerebro. Esto produce una sensación de bienestar, mejora el estado de ánimo, aumenta el nivel de atención y la memoria, y nos ayuda a asimilar las emociones y a reducir la ansiedad."
+    "texto":"- Integra los hemisferios cerebrales ampliando la visión.- Mejora la concentración.- Reduce, previene y ayuda a manejar las situaciones de estrés.- Estimula la creatividad.- Disminuye y previene las enfermedades. - Incrementa la energía general."
   }
 ]
 

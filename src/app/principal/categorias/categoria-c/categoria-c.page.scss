@@ -1,5 +1,6 @@
 ion-content{
-  --background: var(--ion-color-libroMeditacion4) url('../../../../assets/imgs/mundo-manos.png') no-repeat center center / cover;
+  --background: var(--ion-color-libroMeditacion1) url('../../../../assets/imgs/image-41.png') no-repeat 101% center / cover;
+
 }
 
 ion-toggle{
@@ -10,8 +11,9 @@ ion-toggle{
 
 
 .play-button-circle{
-  background: lightblue;
+  background: var(--ion-color-libroMeditacion4);
 }
+
 
 
 .frases{

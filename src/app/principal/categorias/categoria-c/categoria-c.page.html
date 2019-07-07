@@ -7,13 +7,13 @@
             <ion-row>
                 <ion-col size="12">
                     <div class="play-button-circle posicion-play" id="play-button" (click)="playPause(media.url, i )">
-                        <ion-icon [src]="'assets/icon/'+ media.icon +'.svg'" style="color:white">
+                        <ion-icon [src]="'assets/icon/'+ media.icon +'.svg'" color="libroMeditacion3">
                         </ion-icon>
                     </div>
                 </ion-col>
 
                 <ion-col size="12" class="center">
-                  <app-progress-bar [progress]="progresoBar" color="light"
+                  <app-progress-bar [progress]="progresoBar" color="rgb(195,193,212)"
                                      attr.id="{{media.id_progress}}"
                                      [ngClass]="{'fadeIn': media.fadeIn}">
                   </app-progress-bar>
@@ -26,7 +26,7 @@
                 </ion-col>
             </ion-row>
             <div class="posicion-texto-explicativo" *ngIf="i == 0">
-                <ion-text style="color:lightblue">
+                <ion-text color="light">
                     Deslizar hacia la derecha
                 </ion-text>
             </div>

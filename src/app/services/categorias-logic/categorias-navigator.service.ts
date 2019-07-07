@@ -30,7 +30,13 @@ export class CategoriasNavigatorService {
               this.navCtrl.navigateForward("/categoria-b");
             });
             break;
-        case "categoria_c": this.categoria_c(); break;
+        case "categoria_c": 
+             this.categoriaLogic.fetchAudiosCategoria(categoria).subscribe(async (audios)=>{
+              console.log("Audios : ", audios)
+              this.categoriaLogic.audiosCategoria = audios.data;
+              this.navCtrl.navigateForward("/categoria-c");
+            });
+            break;
     }
   }
 
@@ -45,12 +51,11 @@ export class CategoriasNavigatorService {
         this.navCtrl.navigateForward("/slides-b");
         break;
 
-        case "categoria_c": this.categoria_c(); break;
+        case "categoria_c": 
+        this.navCtrl.navigateForward("/slides-c");
+        break;
     }
   }
 
-  categoria_c() {
-      return true
-  }
 
 }

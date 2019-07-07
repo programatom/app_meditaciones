@@ -10,6 +10,8 @@ const routes: Routes = [
   { path: 'slides-a', loadChildren: './principal/categorias/categoria-a/slides-a/slides-a.module#SlidesAPageModule' },
   { path: 'categoria-b', loadChildren: './principal/categorias/categoria-b/categoria-b.module#CategoriaBPageModule' },
   { path: 'slides-b', loadChildren: './principal/categorias/categoria-b/slides-b/slides-b.module#SlidesBPageModule' },
+  { path: 'categoria-c', loadChildren: './principal/categorias/categoria-c/categoria-c.module#CategoriaCPageModule' },
+  { path: 'slides-c', loadChildren: './principal/categorias/categoria-c/slides-c/slides-c.module#SlidesCPageModule' },
 
 ];
 @NgModule({
