@@ -19,7 +19,7 @@ export class CategoriaBPage implements OnInit {
     audio = new Audio();
 
     // variablesOperativas
-    categoria = "categoria_a";
+    categoria = "categoria_b";
     medias = [];
 
     // Intervals
@@ -52,7 +52,9 @@ export class CategoriaBPage implements OnInit {
                                                    });
       this._CL.processUrls(this.medias);
       this._CL.initProgressBarAndLoader(this.medias);
-      this._CL.slideSubscriptions(this.slides,  this.interval, this.audio, this.medias, this.timer);
+      this._CL.slideSubscriptions(this.slides,  this.interval, this.audio, this.medias, this.timer, ()=>{
+        return this.interval;
+      });
       this._CL.init(this.medias, this.audio, this.downloadIconColor, this.categoria, (iconColor)=>{
         this.downloadIconColor = iconColor;
       });

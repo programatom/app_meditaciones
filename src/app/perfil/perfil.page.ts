@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalStorageService, DownloadService, FriendsService } from '../services/services.index';
+import { NavController } from '@ionic/angular';
+
+import { LocalStorageService, DownloadService, FriendsService, ToastService } from '../services/services.index';
 import { UserDataService } from '../services/user-data/user-data.service';
 import { ObjUserData } from 'src/interfaces/interfaces';
 import { PuntajeCalculatorService } from '../services/puntaje-calculator/puntaje-calculator.service';
@@ -45,7 +47,9 @@ export class PerfilPage implements OnInit {
                 private modalCtrl: ModalController,
                 private downloadServ: DownloadService,
                 private categoriaNavigation: CategoriasNavigatorService,
-                private friendsServ: FriendsService) {
+                private friendsServ: FriendsService,
+                private toastServ: ToastService,
+                private navCtrl: NavController) {
           this.userData = this.userDataServ.userData;
           this.token = this.userDataServ.token;
           this.slidesOptions = {
@@ -119,19 +123,25 @@ export class PerfilPage implements OnInit {
       for(let i = 0; i < this.amigos.length; i ++){
         if(this.amigos[i].estado == "aceptado"){
           var amigoData = this.amigos[i].user_data;
-          var puntaje = this.puntajeServ.calcularPuntaje(amigoData.segundos_meditados, amigoData.meditaciones_escuchadas);
-          var nivel = this.puntajeServ.calcularNivel(puntaje);
-
-          var tiempoMedidaObj = this.convertidorDeTiempo(amigoData.segundos_meditados);
-          this.amigos[i].user_data.tiempo_meditado = tiempoMedidaObj.tiempo;
-          this.amigos[i].user_data.medida_tiempo_meditado = tiempoMedidaObj.medida;
-
-          this.amigos[i].user_data.puntaje = puntaje;
-          this.amigos[i].user_data.nivel = nivel;
-          this.amigos[i].icono = "arrow-dropdown";
+          this.inicializarAmigoAceptado(amigoData, i)
         }
       }
       console.log(this.amigos)
+    }
+
+    inicializarAmigoAceptado(amigoData, index){
+      console.log("amigoData enviada a procesar");
+      console.log(amigoData);
+      var puntaje = this.puntajeServ.calcularPuntaje(amigoData.segundos_meditados, amigoData.meditaciones_escuchadas);
+      var nivel = this.puntajeServ.calcularNivel(puntaje);
+      var tiempoMedidaObj = this.convertidorDeTiempo(amigoData.segundos_meditados);
+
+      this.amigos[index].user_data.tiempo_meditado = tiempoMedidaObj.tiempo;
+      this.amigos[index].user_data.medida_tiempo_meditado = tiempoMedidaObj.medida;
+      this.amigos[index].user_data.puntaje = puntaje;
+      this.amigos[index].user_data.nivel = nivel;
+      this.amigos[index].icono = "arrow-dropdown";
+      return;
     }
 
     cambiarIconoDeListaDeAmigos(i){
@@ -202,30 +212,75 @@ export class PerfilPage implements OnInit {
 
 
 
-    responderSolicitud(action, index){
+    responderSolicitud(action, index, type = "normal"){
       let id = this.amigos[index].id;
-
-      switch(action){
-        case "aceptar":
-        this.amigos[index].estado = "aceptado";
-        this.friendsServ.updateSolicitud({
-          "id": id,
-          "data":{
-            "estado":"aceptado"
+      if(type == "eliminar_aceptada"){
+        let header = "Confirmación";
+        let subHeader = "";
+        let inputs = [];
+        let buttons = [{
+          "text" : "Cancelar",
+          "role": "cancel"
+        },{
+          "text":"Aceptar",
+          "handler":() =>{ 
+            this.rechazarSolicitud(index,id);
           }
-        }, this.token).subscribe((respuesta)=>{
-          console.log(respuesta)
-        })
-        break;
-        case "rechazar":
-        this.amigos.splice(index,1);
-        this.friendsServ.rechazarSolicitud({
-          "id" : id
-        },this.token).subscribe((respuesta)=>{
-          console.log(respuesta);
-        });
-        break;
+        }];
+        let message = "¿Está seguro que desea eliminar esta amistad?";
+
+        this.toastServ.presentAlert(header,subHeader, inputs,buttons, message);
+
+      } else {
+        switch(action){
+          case "aceptar":
+          this.amigos[index].estado = "aceptado";
+          this.friendsServ.updateSolicitud({
+            "id": id,
+            "data":{
+              "estado":"aceptado"
+            }
+          }, this.token).subscribe((respuesta)=>{
+            console.log(this.amigos);
+            let amigoNuevoData = respuesta.data.user_data;
+            let amigoNuevoUser = respuesta.data.user;
+            this.toastServ.presentToast("Se agrego a tu amigo con éxito, ahora podrás ver sus estadisticas y competir por quien medita mas!");
+            this.inicializarAmigoAceptado(amigoNuevoData, index);
+          });
+          break;
+          case "rechazar":
+          this.rechazarSolicitud(index,id);
+          break;
+        }
       }
+    }
+
+    rechazarSolicitud(index,id){
+      this.amigos.splice(index,1);
+      this.friendsServ.rechazarSolicitud({
+        "id" : id
+      },this.token).subscribe((respuesta)=>{
+        console.log(respuesta);
+      });
+    }
+
+    logout(){
+      let buttons = [
+        {
+          "text":"Confirmar",
+          "handler":()=>{
+            this.localStorageServ.eliminateAllValuesInStorage().then(()=>{
+              this.navCtrl.navigateBack("/login-or-register");
+            });
+          }
+        },
+        {
+          "text":"Cancelar",
+          "role":"cancel"
+        }
+      ];
+      let inputs = [];
+      this.toastServ.presentAlert("Salir de la sesión", "¿Está seguro que quiere salir de la sesión?",inputs,buttons,"")
     }
 
 }

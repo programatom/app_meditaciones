@@ -7,6 +7,10 @@ import { NavController } from '@ionic/angular';
 })
 
 export class CategoriasNavigatorService {
+
+  currentcategoryabcd:string;
+  fetchAudiosIgnore = ["categoria_d"];
+
   constructor(private categoriaLogic: CategoriasLogicService,
               private navCtrl: NavController){
 
@@ -14,47 +18,33 @@ export class CategoriasNavigatorService {
 
 
   async categoriasSwitchNavigation(categoria){
-    switch (categoria) {
-
-        case "categoria_a":
-            this.categoriaLogic.fetchAudiosCategoria(categoria).subscribe(async (audios)=>{
-              this.categoriaLogic.audiosCategoria = audios.data;
-              this.navCtrl.navigateForward("/categoria-a");
-            });
-            break;
-
-        case "categoria_b":
-            this.categoriaLogic.fetchAudiosCategoria(categoria).subscribe(async (audios)=>{
-              console.log("Audios : ", audios)
-              this.categoriaLogic.audiosCategoria = audios.data;
-              this.navCtrl.navigateForward("/categoria-b");
-            });
-            break;
-        case "categoria_c": 
-             this.categoriaLogic.fetchAudiosCategoria(categoria).subscribe(async (audios)=>{
-              console.log("Audios : ", audios)
-              this.categoriaLogic.audiosCategoria = audios.data;
-              this.navCtrl.navigateForward("/categoria-c");
-            });
-            break;
+    if(this.fetchAudiosIgnore.includes(categoria)){
+        this.currentcategoryabcd = this.getCurrentNavigationACBD(categoria);
+        this.navCtrl.navigateForward("/categoria-" + this.currentcategoryabcd);
+    } else {
+      this.categoriaLogic.fetchAudiosCategoria(categoria).subscribe(async (audios)=>{
+        console.log("Directorio de audios");
+        console.log(audios);
+        this.categoriaLogic.audiosCategoria = audios.data;
+        this.currentcategoryabcd = this.getCurrentNavigationACBD(categoria);
+        this.navCtrl.navigateForward("/categoria-" + this.currentcategoryabcd);
+      });
     }
+
   }
 
-  async slidesSwitchNavigation(categoria){
-    switch (categoria) {
+  async slidesSwitchNavigation(categoria:string){
+    this.currentcategoryabcd = this.getCurrentNavigationACBD(categoria);
 
-        case "categoria_a":
-        this.navCtrl.navigateForward("/slides-a");
-        break;
+    this.navCtrl.navigateForward("/slides-" + this.currentcategoryabcd );
 
-        case "categoria_b":
-        this.navCtrl.navigateForward("/slides-b");
-        break;
+  }
 
-        case "categoria_c": 
-        this.navCtrl.navigateForward("/slides-c");
-        break;
-    }
+  getCurrentNavigationACBD(categoria){
+    let split = categoria.split("_");
+    let abcdcat = split[1];
+    return abcdcat;
+
   }
 
 

@@ -6,7 +6,7 @@
         <ion-text color="darkBlue" style="font-size:5vw; margin-top:2vw">
             {{userDataServ.userData.nombre}}
         </ion-text>
-        <ion-icon name="settings" slot="end" style="font-size:10vw" color="medium">
+        <ion-icon name="log-out" (click) = "logout()" slot="end" style="font-size:10vw" color="medium">
         </ion-icon>
     </ion-item>
     <br>
@@ -172,7 +172,7 @@
                 </ion-row>
                 <ion-row>
                     <ion-col>
-                        <ion-button expand="full" color="danger" (click)="responderSolicitud('rechazar',i)">Eliminar</ion-button>
+                        <ion-button expand="full" color="danger" (click)="responderSolicitud('rechazar',i, 'eliminar_aceptada')">Eliminar</ion-button>
                     </ion-col>
                 </ion-row>
             </ion-grid>

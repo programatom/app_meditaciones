@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable,Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map } from "rxjs/operators"
 import { Observable } from 'rxjs';
 import { ObjRespuestaServidor } from 'src/interfaces/interfaces';
 import { LocalStorageService } from './local-storage/local-storage.service';
+import { DOCUMENT } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root'
@@ -11,24 +12,35 @@ import { LocalStorageService } from './local-storage/local-storage.service';
 export class HttpService {
 
   token:string;
+  splashIgnore = ["http://meditar-app.com.ar/public/api/actualizarDataUser"];
+
   constructor(private http: HttpClient,
-              private localStorageServ: LocalStorageService) {
+              private localStorageServ: LocalStorageService,
+              @Inject(DOCUMENT) private document: Document) {
 
   }
+
   httpGet(url: string, token?:string): Observable<ObjRespuestaServidor> {
     this.token = this.localStorageServ.localStorageObj.token;
     const headerDict = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ' + this.token,
+      'Authorization': 'Bearer ' + this.token
+    }
+    if(url == ""){
+
     }
 
     const requestOptions = {
       headers: new HttpHeaders(headerDict),
     };
-
+    console.log("GET: " + url);
+    if(!this.splashIgnore.includes(url)){
+      this.document.getElementById("splash").style.visibility = "visible";
+    }
     return this.http.get(url, requestOptions)
       .pipe(
         map((respuesta: any) => {
+          this.document.getElementById("splash").style.visibility = "hidden";
           return respuesta;
         })
       );
@@ -54,11 +66,15 @@ export class HttpService {
     const requestOptions = {
       headers: new HttpHeaders(headerDict),
     };
-
+    console.log("POST: " + url);
+    if(!this.splashIgnore.includes(url)){
+      this.document.getElementById("splash").style.visibility = "visible";
+    }
 
     return this.http.post(url, data ,requestOptions)
       .pipe(
         map((respuesta: any) => {
+          this.document.getElementById("splash").style.visibility = "hidden";
           return respuesta;
         })
       );

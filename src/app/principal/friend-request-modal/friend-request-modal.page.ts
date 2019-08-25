@@ -77,7 +77,7 @@ export class FriendRequestModalPage implements OnInit {
 
   aceptarSolicitud(){
     this.changePopupStateOfFriendship(true);
-    this.toastServ.presentToast("Se agrego a tu amigo con éxito, ahora podrás ver sus estadisticas y competir por quien meditas mas! Ve a la pantalla de perfil para ver tu nueva amistad")
+    this.toastServ.presentToast("Se agrego a tu amigo con éxito, ahora podrás ver sus estadisticas y competir por quien medita mas! Ve a la pantalla de perfil para ver tu nueva amistad")
     this.modalCtrl.dismiss();
   }
 }

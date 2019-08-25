@@ -65,7 +65,7 @@ export class DownloadService {
                 "url": audioUrl,
                 "path": categoria + "/",
                 "name": this.getFileName(audioUrl)
-            })
+            });
         }
         console.log(files);
         return files;

@@ -81,7 +81,7 @@ export class RegisterPage implements OnInit {
           let user = respuesta.data;
           this.localStorageServ.insertAndInstantiateValue("token" , token).then(()=>{
             this.userDataServ.gatherUserData(true, user).then(()=>{
-              this.toastServ.presentToast("Bienvenido " + user.name, "success");
+              this.toastServ.presentToast("Bienvenido a MeditAr App " + user.name + ". Nuestra app es totalmente gratuita, disfruta de nuestras meditaciones y respirá.", "success");
               this.navCtrl.navigateForward("/tabs/principal");
             })
           });

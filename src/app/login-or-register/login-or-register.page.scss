@@ -1,6 +1,8 @@
 ion-content{
-  --background: linear-gradient(to top, var(--ion-color-primary-tint), var(--ion-color-tertiary)) !important;
+  //--background: linear-gradient(to top, var(--ion-color-primary-tint), var(--ion-color-tertiary)) !important;
   //--background: white !important;
+  --background: rgb(255,255,255); 
+  --background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(251,255,249,1) 0%, rgba(166,216,235,1) 100%);
 }
 
 ion-grid{

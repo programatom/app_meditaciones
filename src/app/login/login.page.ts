@@ -42,7 +42,7 @@ export class LoginPage implements OnInit {
         console.log("SE INSTANCIA EL TOKEN EN EL LS")
         this.localStorageServ.insertAndInstantiateValue("token" , token).then(()=>{
           this.userDataServ.gatherUserData(false).then(()=>{
-            this.toastServ.presentToast("Bienvenido " + nombre, "success");
+            this.toastServ.presentToast("Bienvenido a MeditAr App " + nombre + ". Nuestra app es totalmente gratuita, disfruta de nuestras meditaciones y respirá.", "success");
             this.navCtrl.navigateForward("/tabs/principal");
           })
         });

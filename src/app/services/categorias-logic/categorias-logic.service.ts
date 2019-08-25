@@ -6,6 +6,7 @@ import { Events } from '@ionic/angular';
 import { DOCUMENT } from '@angular/platform-browser';
 import { DownloadService } from '../download/download.service';
 import { LocalStorageService } from '../local-storage/local-storage.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,8 @@ export class CategoriasLogicService {
               @Inject(DOCUMENT) private _document: Document,
               private userData: UserDataService,
               private downloadServ: DownloadService,
-              private localStorageServ: LocalStorageService) {
+              private localStorageServ: LocalStorageService,
+              private sanitizer:DomSanitizer) {
                 this.token = this.userDataServ.token;
               }
 
@@ -134,10 +136,17 @@ export class CategoriasLogicService {
 
 
   cambiarProgresoAudio(progressPercentage, resume, audio = new Audio()) {
-
+      console.log(progressPercentage)
+      console.log(resume)
+      console.log(audio)
+      console.log(audio.currentTime)
+      let newTime = Math.round(audio.duration * progressPercentage);
+      console.log(newTime)
+      audio.currentTime = newTime;
       setTimeout(()=>{
-        audio.play();
-      }, 2000)
+      audio.play();
+      },1000)
+
   }
 
 
@@ -189,12 +198,13 @@ export class CategoriasLogicService {
     }
   }
 
-  slideSubscriptions(slides, intervalInt, audio, medias, timer){
+  slideSubscriptions(slides, intervalInt, audio, medias, timer, intervalReturn){
     slides.ionSlideDidChange.subscribe(() => {
-
+        clearInterval(intervalReturn());
         if (medias[this.index] != undefined) {
             if (!audio.paused) {
               audio.src = "";
+              console.log(intervalInt);
               this.pausarAudio(intervalInt, audio, medias, timer);
             }
         }
@@ -212,11 +222,11 @@ export class CategoriasLogicService {
 
       // Envío la data cuando se va de la página o después de 5 minutos de inactividad marcada por la play function
       return new Promise((resolve) => {
-          let segundosMeditadosUser = this.userData.userData.segundos_meditados;
+          let segundosMeditadosUser:any = this.userData.userData.segundos_meditados;
           let segundosMeditadosSesion = timer.getTimeValues().seconds;
           timer.stop();
-          let segundosTotales = segundosMeditadosUser + segundosMeditadosSesion;
-          this.userData.userData.segundos_meditados = segundosTotales;
+          let segundosTotales:any = parseInt(segundosMeditadosUser) + parseInt(segundosMeditadosSesion);
+          this.userData.userData.segundos_meditados = parseInt(segundosTotales);
 
           this.userData.updateUserData({
               "segundos_meditados": segundosTotales
@@ -227,11 +237,28 @@ export class CategoriasLogicService {
       })
   }
 
+  movePlayButton(id) {
+    console.log(id);
+    var elem = document.getElementById(id);   
+    function frame() {
+      if (top == 0) {
+        clearInterval(interval);
+      } else {
+        top--; 
+        elem.style.top = top + 'vw'; 
+      }
+    }
+    if(elem.style.top != "0vw"){
+      var top = 10;
+      var interval = setInterval(frame, 50);
+    }
+  }
+
   playPause(url, index, audio,
             intervalInt,
             medias, timer,
             callbackMinutero) {
-      this._document.getElementById("play-button").classList.add("moveUp");
+      this.movePlayButton("play-button-" + index);
 
       if (audio.paused == false) {
 
@@ -273,6 +300,8 @@ export class CategoriasLogicService {
       let directory = this.downloadServ.getDeviceDirectory();
 
       if(directory == null){
+        console.log(this.localStorageServ.localStorageObj[categoria])
+        console.log(categoria)
         if(this.localStorageServ.localStorageObj[categoria] != undefined){
           console.log("Categoria descargada..")
           downloadIconColor = "success";
@@ -295,6 +324,7 @@ export class CategoriasLogicService {
   }
 
   initNewAudio(url,index, audio){
+    url="http://meditar-app.com.ar/media/audio.php";
     this.url = url;
     this.index = index;
     audio.src = url;
@@ -331,4 +361,13 @@ export class CategoriasLogicService {
          clearInterval(intervalsFN);
      });
    }
+
+   sanitizeurl(url){
+     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+   }
+
+
+   // VIDEOS
+
+
 }
