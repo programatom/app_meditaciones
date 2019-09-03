@@ -107,7 +107,7 @@ export class CategoriaBPage implements OnInit {
 
     ngOnDestroy() {
         // Me tengo que desubscribir de los eventos
-        this._CL.destroyComponent( this.interval, this.audio);
+        this._CL.destroyComponent( this.interval, this.audio, this.medias);
         this._CL.grabarSegundosMeditados(this.timer);
     }
 

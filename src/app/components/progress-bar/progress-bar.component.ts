@@ -22,7 +22,7 @@ export class ProgressBarComponent implements OnInit {
     diferencia: number;
 
     constructor(private event: Events) {
-
+        this.progress = 0;
     }
 
     touchstart(event) {

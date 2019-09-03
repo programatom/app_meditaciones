@@ -3,10 +3,13 @@ import { HttpService } from '../http.service';
 import { UserDataService } from '../user-data/user-data.service';
 import { URL_SERVICES, URL_ASSETS } from 'src/config/config';
 import { Events } from '@ionic/angular';
+
 import { DOCUMENT } from '@angular/platform-browser';
 import { DownloadService } from '../download/download.service';
 import { LocalStorageService } from '../local-storage/local-storage.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Media, MediaObject } from "@ionic-native/media/ngx";
+import { Platform } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +20,9 @@ export class CategoriasLogicService {
   audiosCategoria = [];
   url = "";
   index = 0;
-
+  position_interval;
+  audioIsPaused = true;
+  currentAudio:MediaObject;
 
   constructor(private http:HttpService,
               private userDataServ: UserDataService,
@@ -26,7 +31,9 @@ export class CategoriasLogicService {
               private userData: UserDataService,
               private downloadServ: DownloadService,
               private localStorageServ: LocalStorageService,
-              private sanitizer:DomSanitizer) {
+              private sanitizer:DomSanitizer,
+              private media:Media,
+              private plt: Platform) {
                 this.token = this.userDataServ.token;
               }
 
@@ -46,7 +53,6 @@ export class CategoriasLogicService {
     let url = URL_SERVICES + "inicializarCategoria";
     console.log("Data enviada a inicializar: ", data)
     this.http.httpPost(url,data,this.token).subscribe((respuesta)=>{
-
       console.log(respuesta);
       this.userDataServ.userData.initCats.push({
         "nombre_categoria": data.nombre_categoria
@@ -67,7 +73,6 @@ export class CategoriasLogicService {
           } else {
               segundosStr = segundos
           }
-
           return minutosStr + " : " + segundosStr;
       } else {
           let n = minutos;
@@ -96,6 +101,7 @@ export class CategoriasLogicService {
 
 
   fetchAudiosCategoria(categoria){
+
     let url = URL_SERVICES + "audiosCategoria/" + categoria;
     return this.http.httpGet(url);
   }
@@ -115,11 +121,11 @@ export class CategoriasLogicService {
     this.event.subscribe("touchend", (objTouchEnd: {
         progressPercentage
     }) => {
-        this.cambiarProgresoAudio(objTouchEnd.progressPercentage, resumeAfterTouchStart, audio);
+        this.cambiarProgresoAudio(objTouchEnd.progressPercentage, resumeAfterTouchStart, audio, medias);
     });
 
     this.event.subscribe("touchstart", () => {
-        if (audio.paused == false) {
+        if (!this.audioIsPausedFN(audio)) {
 
           this.playPause(this.url, this.index, audio,
                     intervalInt,
@@ -133,25 +139,47 @@ export class CategoriasLogicService {
     });
   }
 
+  audioIsPausedFN(audio){
+    if(this.plt.is("cordova")){
+      return this.audioIsPaused;
+    } else {
+      return audio.paused;
+    }
+  }
 
 
-  cambiarProgresoAudio(progressPercentage, resume, audio = new Audio()) {
-      console.log(progressPercentage)
-      console.log(resume)
-      console.log(audio)
-      console.log(audio.currentTime)
+
+  cambiarProgresoAudio(progressPercentage, resume, audio = new Audio(), medias) {
+
+    if(this.plt.is("cordova")){
+      let newTime = Math.floor(medias[this.index].audioDuration * progressPercentage);
+      console.log("SEEK TO DEVICE AUDIO");+
+      console.log("To new time: " + newTime + " in miliseconds " + (newTime * 1000))
+      this.currentAudio.seekTo(newTime * 1000);
+      if(resume){
+        medias[this.index].icon = "pause";
+        this.currentAudio.play();
+      }
+    } else {
       let newTime = Math.round(audio.duration * progressPercentage);
-      console.log(newTime)
       audio.currentTime = newTime;
-      setTimeout(()=>{
-      audio.play();
-      },1000)
+      if(resume){
+        medias[this.index].icon = "pause";
+        audio.play();
+      }
+    }
 
   }
 
 
-  destroyComponent(progresInt, audio){
-    audio.pause();
+  destroyComponent(progresInt, audio, medias){
+    if(!this.audioIsPausedFN(audio)){
+      if(this.plt.is("cordova")){
+        this.currentAudio.stop();
+      } else {
+        audio.pause();
+      }
+    }
     this.clearIntervals(progresInt);
     this.event.unsubscribe("swipes");
     this.event.unsubscribe("touchend");
@@ -165,26 +193,32 @@ export class CategoriasLogicService {
 
 
   processUrls(medias){
-    let validMimes = ["mp4" ,"mp3", "aiff"];
+    let validMimes = ["mp4" ,"mp3"];
     this.audiosCategoria = this.audiosCategoria.filter((value)=> {
-      console.log
         if(validMimes.includes(value.split(".")[1])){
           return true;
-        }else{
+        } else {
           return false;
         }
     });
+    console.log("Audios despues del filtro");
+    console.log(this.audiosCategoria)
     this.audiosCategoria.filter((value)=>{
       medias.push({
-        "url": URL_ASSETS + value,
+        "url": value,
         "icon":"play",
         "animateUp" :false,
         "id_loader": Math.random(),
         "id_minutero":Math.random(),
         "id_progress":Math.random(),
-        "fadeIn":false
+        "fadeIn":false,
+        "progress": 0,
+        "audioObject":undefined,
+        "audioDuration":0
       });
     });
+    console.log("Audios con keys de trabajo");
+    console.log(medias)
   }
 
   initProgressBarAndLoader(medias){
@@ -202,9 +236,13 @@ export class CategoriasLogicService {
     slides.ionSlideDidChange.subscribe(() => {
         clearInterval(intervalReturn());
         if (medias[this.index] != undefined) {
-            if (!audio.paused) {
-              audio.src = "";
-              console.log(intervalInt);
+            if (!this.audioIsPausedFN(audio)) {
+              if(!this.plt.is("cordova")){
+                audio.src = "";
+              } else {
+                console.log("RELEASE CURRENT AUDIO")
+                //this.currentAudio.release();
+              }
               this.pausarAudio(intervalInt, audio, medias, timer);
             }
         }
@@ -213,13 +251,17 @@ export class CategoriasLogicService {
 
   pausarAudio(intervalInt, audio, medias, timer){
     this.clearIntervals(intervalInt);
-    audio.pause();
+    if(this.plt.is("cordova")){
+      console.log("CURRENT DEVICE AUDIO PAUSED")
+      this.currentAudio.pause();
+    } else {
+      audio.pause();
+    }
     medias[this.index].icon = "play";
     this.grabarSegundosMeditados(timer);
   }
 
   grabarSegundosMeditados(timer) {
-
       // Envío la data cuando se va de la página o después de 5 minutos de inactividad marcada por la play function
       return new Promise((resolve) => {
           let segundosMeditadosUser:any = this.userData.userData.segundos_meditados;
@@ -258,9 +300,14 @@ export class CategoriasLogicService {
             intervalInt,
             medias, timer,
             callbackMinutero) {
+
       this.movePlayButton("play-button-" + index);
 
-      if (audio.paused == false) {
+      var isPaused = this.audioIsPausedFN(audio);
+      
+      console.log("EL AUDIO ESTA PAUSADO: ", isPaused);
+      console.log(medias);
+      if (!isPaused) {
 
           this.pausarAudio(intervalInt, audio, medias, timer);
 
@@ -278,24 +325,42 @@ export class CategoriasLogicService {
           }
 
           if(this.index != index){
-            this.initNewAudio(url,index, audio);
+            console.log("LAST INDEX: " + this.index + " NEW INDEX: " + index)
+            this.initNewAudio(url,index, audio, medias, true, callbackMinutero);
+          } else {
+            this.audioObjPlay(audio, callbackMinutero, medias)
           }
-
-          audio.play().then(() => {
-            this.intervalsFN(audio, function(interval, minuteroCB, progresoCB){
-              callbackMinutero(interval, minuteroCB, progresoCB);
-            });
-          })
-          .catch((err)=>{
-            console.log(err)
-          });
       }
   }
+
+  audioObjPlay(audio, callbackMinutero, medias){
+    if(this.plt.is("cordova")){
+      console.log("PLAY MEDIA AUDIO");
+      this.currentAudio.play();
+      console.log("SET VOLUME TO 1 JUST IN CASE");
+      this.currentAudio.setVolume(1.0);
+
+      this.intervalsFN(audio, function(interval, minuteroCB, progresoCB){
+          callbackMinutero(interval, minuteroCB, progresoCB);
+      }, medias);
+    } else {
+      audio.play().then(() => {
+        this.intervalsFN(audio, function(interval, minuteroCB, progresoCB){
+          callbackMinutero(interval, minuteroCB, progresoCB);
+        }, medias);
+      })
+      .catch((err)=>{
+        console.log(err)
+      });
+    }
+  }
+
   async init(medias, audio, downloadIconColor, categoria, callback){
 
       if(medias[0] != undefined){
-        this.initNewAudio(medias[0].url, 0, audio);
+        this.initNewAudio(medias[0].url, 0, audio, medias);
       }
+
 
       let directory = this.downloadServ.getDeviceDirectory();
 
@@ -323,43 +388,111 @@ export class CategoriasLogicService {
       callback(downloadIconColor);
   }
 
-  initNewAudio(url,index, audio){
-    url="http://meditar-app.com.ar/media/audio.php";
-    this.url = url;
-    this.index = index;
-    audio.src = url;
-    audio.load();
-    return;
+  initNewAudio(url,index, audio, medias, play = false, callbackMinutero = undefined){
+
+    if(this.plt.is("cordova")){
+      var path = URL_ASSETS + url;
+      console.log("EL PATH A CARGAR EN EL MEDIA OBJECT")
+      console.log(path);
+      console.log("EL INDEX A CARGAR: ");
+      console.log(index);
+      this.currentAudio = this.media.create(path);
+      this.currentAudio.onStatusUpdate.subscribe((ev)=>
+      {
+        console.log("ON STATUS UPDATE CURRENT MEDIA AUDIO");
+        console.log(ev);
+
+        if(ev == 2){
+          this.audioIsPaused = false;
+        }
+
+        if(ev == 3){
+          this.audioIsPaused = true;
+        }
+
+      });
+
+      console.log("PLAY MEDIA AUDIO");
+      this.currentAudio.play();
+      console.log("SET VOLUME MEDIA AUDIO");
+      this.currentAudio.setVolume(0.0);
+      var duration;
+      var interval = setInterval(()=>{
+        if(duration > 0){
+          console.log("STOP MEDIA AUDIO");
+          this.currentAudio.setVolume(1.0);
+          this.currentAudio.stop();
+          this.audioIsPaused = true;
+          medias[this.index].audioDuration = parseInt(duration);
+          console.log("SE CONSIGUE LA DURACION DEL AUDIO QUE ES");
+          console.log(duration);
+          clearInterval(interval);
+          if(play){
+            setTimeout(()=>{
+              this.audioObjPlay(audio, callbackMinutero, medias)
+            },1000);
+          }
+        } else {
+          duration = this.currentAudio.getDuration();
+        }
+      }, 100);
+      this.index = index;
+    } else{
+      var get = "http://meditar-app.com.ar/media/audio.php?location=" + url;
+      console.log("Petición GET para elemento audio HTML");
+      console.log(get);
+      this.url = get;
+      this.index = index;
+      audio.src = get;
+      audio.load();
+      return;
+    }
   }
 
-  intervalsFN(audio, callback){
+  intervalsFN(audio, callback, medias){
     let interval = setInterval(() =>
     {
-        console.log("Interval cycle")
-        let minutero = this.minuteroFunction(audio.currentTime);
-        let progreso = (audio.currentTime / audio.duration) * 100;
-        callback(interval, minutero, progreso);
+        console.log("Interval cycle");
+        var minutero;
+        var progreso;
+        if(this.plt.is("cordova")){
+          this.currentAudio.getCurrentPosition().then((currentPosition)=>{
+            console.log("CURRENT AUDIO MEDIA POSITION");
+            console.log(currentPosition)
+            minutero = this.minuteroFunction(Math.floor(currentPosition));
+            progreso = (Math.floor(currentPosition)/Math.floor(medias[this.index].audioDuration)) * 100;
+            medias[this.index].progreso = progreso;
+            medias[this.index].minutero = minutero;
+            callback(interval, minutero, progreso);
+          });
+        } else {
+          minutero = this.minuteroFunction(audio.currentTime);
+          progreso = (audio.currentTime / audio.duration) * 100;
+          medias[this.index].progreso = progreso;
+          medias[this.index].minutero = minutero;
+          callback(interval, minutero, progreso);
+        }
     }, 1000);
   }
 
 
    audioSubscriptions(audio, media, intervalsFN){
-     audio.addEventListener("progress", () => {
+     if(!this.plt.is("cordova")){
+       audio.addEventListener("progress", () => {
+           console.log("progress");
+           if (audio.paused == false) {
+               this._document.getElementById(media[this.index].id_loader).style.visibility = "visible";
+               setTimeout(() => {
+                   this._document.getElementById(media[this.index].id_loader).style.visibility = "hidden";
+               }, 1000);
+           }
+       });
 
-         // LOADER
-         console.log("progress")
-         if (audio.paused == false) {
-             this._document.getElementById(media[this.index].id_loader).style.visibility = "visible";
-             setTimeout(() => {
-                 this._document.getElementById(media[this.index].id_loader).style.visibility = "hidden";
-             }, 1000);
-         }
-     });
-
-     audio.addEventListener("ended", () => {
-         media[this.index].icon = "med-play";
-         clearInterval(intervalsFN);
-     });
+       audio.addEventListener("ended", () => {
+           media[this.index].icon = "med-play";
+           clearInterval(intervalsFN);
+       });
+     }
    }
 
    sanitizeurl(url){

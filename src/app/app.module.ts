@@ -10,10 +10,12 @@ import { NativeAudio } from '@ionic-native/native-audio/ngx';
 import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
 
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
+import { Media } from "@ionic-native/media/ngx";
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,6 +28,7 @@ import { IonicStorageModule } from '@ionic/storage';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     NativeAudio,
     FileTransfer,
+    Media,
     File
   ],
   bootstrap: [AppComponent]

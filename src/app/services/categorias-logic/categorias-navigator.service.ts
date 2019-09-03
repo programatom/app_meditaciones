@@ -23,8 +23,6 @@ export class CategoriasNavigatorService {
         this.navCtrl.navigateForward("/categoria-" + this.currentcategoryabcd);
     } else {
       this.categoriaLogic.fetchAudiosCategoria(categoria).subscribe(async (audios)=>{
-        console.log("Directorio de audios");
-        console.log(audios);
         this.categoriaLogic.audiosCategoria = audios.data;
         this.currentcategoryabcd = this.getCurrentNavigationACBD(categoria);
         this.navCtrl.navigateForward("/categoria-" + this.currentcategoryabcd);

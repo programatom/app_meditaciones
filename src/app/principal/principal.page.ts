@@ -7,6 +7,7 @@ import { FriendRequestModalPage } from './friend-request-modal/friend-request-mo
 import { CategoriasLogicService } from '../services/categorias-logic/categorias-logic.service';
 import { CategoriasNavigatorService } from '../services/categorias-logic/categorias-navigator.service';
 import { ModalCategoriasSlidesService } from '../services/categorias-logic/modal-categorias-slides.service';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 @Component({
     selector: 'app-principal',
@@ -22,8 +23,10 @@ export class PrincipalPage implements OnInit {
         private popupLogicServ: PopupLogicService,
         private modalCtrl: ModalController,
         private categoriaLogic: CategoriasLogicService,
-        private categoriaNavigation: CategoriasNavigatorService) {
+        private categoriaNavigation: CategoriasNavigatorService,
+        private statusBar: StatusBar) {
         this.userData = this.userDataServ.userData;
+        this.statusBar.styleDefault();
     }
 
     ngOnInit() {
