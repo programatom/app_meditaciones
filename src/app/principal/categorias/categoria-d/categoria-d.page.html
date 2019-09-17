@@ -1,0 +1,53 @@
+<app-toolbar-categoria (dismiss) = "dismiss()" (download)="download($event)" [downloadIconColor]="downloadIconColor">
+
+</app-toolbar-categoria>
+<ion-content scrollY="false">
+
+
+ 
+  <!--
+    <div *ngFor="let media of medias; let i = index">
+
+    </div>
+    -->
+    <ion-slides #slides>
+         <div id="pantalla_negra">
+      
+    </div>
+        <ion-slide *ngFor="let media of medias; let i = index">
+            <ion-row>
+              <ion-col size="12">
+                <!--
+                <ion-icon [name] = "media.icon" color="light" style="font-size: 161px;" (click)="openMedia(media.type, i)"></ion-icon>
+              -->
+                  <div *ngIf= "media.type == 'video'">
+                     <iframe width="100%" height="315" frameborder="0" allowfullscreen 
+                    [src]="media.url" [id]="i">
+                    </iframe>
+                  </div>
+                  <div *ngIf="media.type == 'imagen'">
+                    <img [src]="media.url" width="100%">
+                  </div>
+       
+              </ion-col>
+              <ion-col size="12">
+                <ion-text color="light" style="font-size: 21px;">{{media.title}}</ion-text>
+              </ion-col>
+            </ion-row>
+            <div class="posicion-texto-explicativo" *ngIf="i == 0">
+                <ion-text color="light">
+                    Deslizar hacia la derecha
+                </ion-text>
+            </div>
+            <!--
+            <div class="posicion-texto-explicativo" *ngIf="i != 0 && !isDragging && videoON">
+                <ion-text color="light">
+                    Deslizar para ocultar video
+                </ion-text>
+            </div>
+          -->
+        </ion-slide>
+    </ion-slides>
+
+
+</ion-content>

@@ -1,0 +1,29 @@
+ion-content{
+  --background: var(--ion-color-libroMeditacion3) url('../../../../assets/imgs/image-23.png') no-repeat 101% center / cover;
+
+}
+
+ion-toggle{
+  position:absolute;
+  right:7vw;
+  top: 3vw;
+}
+
+
+
+.posicion-texto-explicativo{
+  position: absolute;
+  bottom: 3vw;
+  text-align: center;
+  width: 100%;
+ }
+
+ion-slides{
+  background: transparent;
+  height: 100%;
+}
+iframe{
+    //position: absolute;
+    //top: 33%;
+    //z-index: 999;
+}

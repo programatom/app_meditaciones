@@ -1,0 +1,16 @@
+.container{
+  height: 30vw;
+  width: 25vw;
+  border-radius: 3vw;
+  background: var(--ion-color-libroMeditacion4) url('../../../assets/imgs/mundo-manos.png') no-repeat center center / cover;
+  padding-top: 12vw;
+}
+
+.container:active{
+  transform: translateY(4px);
+}
+
+.text{
+  font-family: Myriad;
+  color: var(--ion-color-light);
+}

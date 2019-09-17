@@ -1,0 +1,37 @@
+ion-content{
+  --background: var(--ion-color-libroMeditacion4) url('../../../../assets/imgs/image-20.png') no-repeat 101% center / cover;
+
+}
+
+ion-toggle{
+  position:absolute;
+  right:7vw;
+  top: 3vw;
+}
+
+
+.play-button-circle{
+  background: lightblue;
+}
+
+
+
+.frases{
+  position:absolute;
+  bottom: 13vw;
+  text-align: center;
+  width: 100%;
+  z-index: 999;
+}
+
+.posicion-texto-explicativo{
+  position: absolute;
+  bottom: 3vw;
+  text-align: center;
+  width: 100%;
+ }
+
+ion-slides{
+  background: transparent;
+  height: 100%;
+}

@@ -1,0 +1,16 @@
+ion-content{
+  --background: var(--ion-color-libroMeditacion3) !important;
+}
+
+ion-slides{
+  background: transparent;
+  height: 100%;
+}
+
+
+
+.texto-slide{
+  font-size: 5vw;
+  font-weight: lighter;
+  color: var(--ion-color-light);
+}

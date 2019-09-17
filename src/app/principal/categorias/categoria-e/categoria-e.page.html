@@ -1,0 +1,37 @@
+<app-toolbar-categoria (dismiss) = "dismiss()" (download)="download($event)" [downloadIconColor]="downloadIconColor" [downloading]="downloading" [categoria] = "'c'"> 
+</app-toolbar-categoria>
+
+<ion-content padding scrollY="false">
+    <ion-slides #slides>
+        <ion-slide *ngFor="let media of medias; let i = index">
+            <ion-row>
+                <ion-col size="12">
+                    <div class="play-button-circle posicion-play" [id]="'play-button-' + i" (click)="playPause(media.url, i )">
+                        <ion-icon [src]="'assets/icon/'+ media.icon +'.svg'" style="color:white">
+                        </ion-icon>
+                    </div>
+                </ion-col>
+
+                <ion-col size="12" class="center">
+                  <app-progress-bar [progress]="progresoBar" color="lightblue"
+                                     attr.id="{{media.id_progress}}"
+                                     [ngClass]="{'fadeIn': media.fadeIn}">
+                  </app-progress-bar>
+                </ion-col>
+                <ion-col size="12" class="center" [ngClass]="{'fadeIn': media.fadeIn}">
+                  <ion-text color="light" attr.id="{{media.id_minutero}}">{{media.minutero ? media.minutero: '00:00'}}</ion-text>
+                </ion-col>
+                <ion-col size="12" class="center">
+                  <app-loader categoria = "a" attr.id="{{media.id_loader}}"></app-loader>
+                </ion-col>
+            </ion-row>
+            <div class="posicion-texto-explicativo" *ngIf="i == 0">
+                <ion-text style="color:white">
+                    Deslizar hacia la derecha
+                </ion-text>
+            </div>
+        </ion-slide>
+    </ion-slides>
+
+
+</ion-content>
