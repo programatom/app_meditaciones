@@ -3,7 +3,7 @@ import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ng
 import { File } from '@ionic-native/file/ngx';
 import { Platform } from '@ionic/angular';
 import { LocalStorageService } from '../local-storage/local-storage.service';
-
+import { URL_ASSETS } from "../../../config/config";
 @Injectable({
     providedIn: 'root'
 })
@@ -28,6 +28,13 @@ export class DownloadService {
     downloadErrors = [];
     downloadedFiles = [];
     categoria = "";
+    downloadingObj = {
+        "categoria_a":false,
+        "categoria_b":false,
+        "categoria_c":false,
+        "categoria_d":false,
+    }; 
+    callbackDownload;
 
     constructor(private file: File,
         private fileTransfer: FileTransfer,
@@ -119,16 +126,24 @@ export class DownloadService {
         this.deleteAsyncCounter = 0;
 
         if (isCordova) {
-            this.getCategoriaDirectory(categoria, directory).then((responseDirectory)=>{
+            this.getCategoriaDirectory(categoria, directory).then(async (responseDirectory)=>{
               console.log("Respuesta del directory: " + JSON.stringify(responseDirectory))
               if (responseDirectory["found"]) {
                 arrayMediaLocal = responseDirectory["dir"]
               } else {
                 arrayMediaLocal = null;
               }
+              /*
               this.checkDifferenceBetweenLocalAndServerMedia(arrayMediaLocal,arrayMediaServer,directory,categoria).then((result)=>{
                 return result;
               })
+              */
+              this.downloadingObj[categoria] = true;
+              console.log("SE INSTANCIA UNA DESCARGA EN EL OBJETO DE  DOWNLOAD SERVICE: ")
+              console.log(JSON.stringify(this.downloadingObj));
+              let result = await this.downloadElements(directory, files, categoria);
+              console.log("RESPUESTA DE LA FUNCIÓN DESCARGA: " + result);
+              return result;
             });
         } else {
             if (this.localStorageServ.localStorageObj[categoria] != undefined) {
@@ -137,9 +152,8 @@ export class DownloadService {
                 arrayMediaLocal = null
             }
         }
-
-
     }
+
 
     async checkDifferenceBetweenLocalAndServerMedia(arrayMediaLocal,
         arrayMediaServer,
@@ -183,15 +197,28 @@ export class DownloadService {
                 this.downloadErrors = [];
                 this.downloadedFiles = [];
                 console.log("Downloading elements..")
-                let resultDownload = await this.downloadElements(directory, elementsToDownload);
+                let resultDownload = await this.downloadElements(directory, elementsToDownload, categoria);
                 console.log("Download result: " + resultDownload);
                 return resultDownload;
             }
         }
     }
 
-    getAllCategorias(){
+    processUrlsIOS(directoryArray){
+        return new Promise(async (resolve)=>{
+            for (var i = 0; i < directoryArray.length; i ++) {
+                var track = directoryArray[i];
+                var entry = await this.file.resolveLocalFilesystemUrl(track.nativeURL);
+                console.log(JSON.stringify(entry))
+                directoryArray[i].nativeURL = entry.toInternalURL();
+
+                console.log("EL I DEL COSO: " + i)
+            }
+            console.log("RESUELVO");
+            resolve();
+        })
     }
+
 
 
 
@@ -200,11 +227,14 @@ export class DownloadService {
         this.file.checkDir(directory, categoria).then((checkDir) => {
           console.log("Respuesta del directorio: " + JSON.stringify(checkDir));
           if (checkDir) {
-            this.file.listDir(directory, categoria).then((arrayDirectory) => {
+            this.file.listDir(directory, categoria).then( async (arrayDirectory) => {
               console.log("checkDir: " + JSON.stringify(arrayDirectory));
-              resolve( {
-                "found": true,
-                "dir": arrayDirectory
+              this.processUrlsIOS(arrayDirectory).then(()=>{
+                  console.log("EL ARRAY MODIFICADO " + JSON.stringify(arrayDirectory))
+                resolve( {
+                    "found": true,
+                    "dir": arrayDirectory
+                });
               });
             }).catch((err) => {
               console.log("Error list dir" + JSON.stringify(err));
@@ -304,47 +334,52 @@ export class DownloadService {
         "url": string,
         "name": string,
         "path": string
-    }>) {
+    }>, categoria) {
         if (this.downloadAsyncCounter > files.length - 1) {
             // Se termina el proceso
-            this.handleEndDownloadProcess();
-            return;
+            
+            return this.handleEndDownloadProcess(categoria);
         }
 
         let i = this.downloadAsyncCounter;
 
         const fileTransferObj: FileTransferObject = this.fileTransfer.create();
         // EL URL DE LA DESCARGA
-        const urlUri = encodeURI(files[i].url);
+        const urlUri =encodeURI(URL_ASSETS + files[i].url);
         let path = dir + files[i].path + files[i].name;
+
         console.log("URL y PATH DEL ARCHIVO: ")
-        console.log(urlUri, path)
+        console.log(JSON.stringify(urlUri));
+        console.log(JSON.stringify(path));
         fileTransferObj.download(urlUri, path).then((respuesta) => {
             console.log(respuesta);
-            this.handleDownloadSuccess(dir, files, files[i]);
+            this.handleDownloadSuccess(dir, files, files[i], categoria);
         },
             (err) => {
                 console.log("Ocurrió un error con la descarga: ", JSON.stringify(err));
-                this.handleDownloadError(files[i], dir, files);
+                this.handleDownloadError(files[i], dir, files, categoria);
             });
     }
 
-    handleDownloadSuccess(dir, files, downloadedFile) {
+    handleDownloadSuccess(dir, files, downloadedFile, categoria) {
         this.downloadAsyncCounter++;
         this.downloadedFiles.push(downloadedFile);
-        this.downloadElements(dir, files);
+        this.downloadElements(dir, files, categoria);
 
     }
 
-    handleDownloadError(file, dir, files) {
+    handleDownloadError(file, dir, files, categoria) {
         this.downloadAsyncCounter++;
         this.downloadErrors.push(file);
-        this.downloadElements(dir, files);
+        this.downloadElements(dir, files, categoria);
     }
 
-    handleEndDownloadProcess() {
+    handleEndDownloadProcess(categoria) {
+        this.downloadingObj[categoria] = false;
         console.log("End process: ", JSON.stringify(this.downloadedFiles));
-        return;
+        console.log("DOWNLOAD OBJECT ", JSON.stringify(this.downloadingObj));
+        this.callbackDownload("download-end");
+        return {"success":true};
     }
 
 

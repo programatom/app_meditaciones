@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { AuthService, ToastService, LocalStorageService } from '../services/services.index';
-import {  FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserDataService } from '../services/user-data/user-data.service';
+import { DOCUMENT } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,9 @@ export class LoginPage implements OnInit {
               private formBuilder: FormBuilder,
               private toastServ: ToastService,
               private localStorageServ: LocalStorageService,
-              private userDataServ:UserDataService) {
+              private userDataServ:UserDataService,
+              @Inject(DOCUMENT) private document: Document
+              ) {
                 this.login = this.formBuilder.group({
                     email: [''],
                     password: [''],
@@ -40,11 +43,15 @@ export class LoginPage implements OnInit {
         let token = respuesta.data.api_token;
         let nombre = respuesta.data.name;
         console.log("SE INSTANCIA EL TOKEN EN EL LS")
+        this.document.getElementById("splash").style.visibility = "visible";
         this.localStorageServ.insertAndInstantiateValue("token" , token).then(()=>{
-          this.userDataServ.gatherUserData(false).then(()=>{
-            this.toastServ.presentToast("Bienvenido a MeditAr App " + nombre + ". Nuestra app es totalmente gratuita, disfruta de nuestras meditaciones y respirá.", "success");
-            this.navCtrl.navigateForward("/tabs/principal");
-          })
+          setTimeout(()=>{
+            this.userDataServ.gatherUserData(false).then(()=>{
+              this.document.getElementById("splash").style.visibility = "hidden";
+              this.toastServ.presentToast("Bienvenido a MeditAr App " + nombre + ". Nuestra app es totalmente gratuita, disfruta de nuestras meditaciones y respirá.", "success");
+              this.navCtrl.navigateForward("/tabs/principal");
+            })
+          }, 1800)
         });
       }else{
         var mensajeError = "El email o la contraseña son incorrectos";

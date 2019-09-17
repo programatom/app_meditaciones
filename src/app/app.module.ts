@@ -16,6 +16,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { Media } from "@ionic-native/media/ngx";
+import { EmailComposer } from '@ionic-native/email-composer/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -29,7 +30,8 @@ import { Media } from "@ionic-native/media/ngx";
     NativeAudio,
     FileTransfer,
     Media,
-    File
+    File,
+    EmailComposer
   ],
   bootstrap: [AppComponent]
 })

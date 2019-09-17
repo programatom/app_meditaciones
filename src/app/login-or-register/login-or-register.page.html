@@ -21,9 +21,10 @@
         </ion-row>
     </ion-grid>
 
-    <img src="assets/imgs/logo.png" class="logo fadeIn" *ngIf="initLogo">
+    <img src="assets/imgs/logo.png" class="logo fadeIn" *ngIf="initLogo && plt.is('ios') && plt.is('cordova')">
+    <img src="assets/imgs/logo.png" class="logo fadeIn android-logo" *ngIf="plt.is('android') || !plt.is('cordova')">
 
-    <ion-row>
+    <ion-row *ngIf="plt.is('ios') && plt.is('cordova')">
         <ion-col size="12">
             <img src="assets/gifs/login-gif.gif">
         </ion-col>

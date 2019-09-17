@@ -11,6 +11,11 @@ import { DownloadService, ToastService } from 'src/app/services/services.index';
 })
 export class CategoriaCPage implements OnInit {
 
+//CONFIG
+    categoria = "categoria_c";
+
+
+
     @ViewChild('slides') slides;
     @ViewChild('progress-bar') progress;
 
@@ -18,7 +23,6 @@ export class CategoriaCPage implements OnInit {
     audio = new Audio();
 
     // variablesOperativas
-    categoria = "categoria_c";
     medias = [];
 
     // Intervals
@@ -32,6 +36,7 @@ export class CategoriaCPage implements OnInit {
     resumeAfterTouchStart: boolean;
 
     downloadIconColor:string = "light";
+    downloading = false;
 
     constructor(private navCtrl: NavController,
         public _CL: CategoriasLogicService,
@@ -49,13 +54,26 @@ export class CategoriaCPage implements OnInit {
                                                      console.log(minuteroCB)
                                                      this.minutero = minuteroCB;
                                                    });
-      this._CL.processUrls(this.medias);
+      await this._CL.processUrls(this.medias, this.categoria);
       this._CL.initProgressBarAndLoader(this.medias);
       this._CL.slideSubscriptions(this.slides,  this.interval, this.audio, this.medias, this.timer, ()=>{
         return this.interval;
       });
       this._CL.init(this.medias, this.audio, this.downloadIconColor, this.categoria, (iconColor)=>{
-        this.downloadIconColor = iconColor;
+
+        let split = iconColor.split("-");
+        console.log(split)
+        if(split.length > 1){  
+          // download-end
+           this.downloading = false;
+           this.downloadIconColor = "success";
+        } else {
+          this.downloadIconColor = iconColor;
+          if(this.downloadServ.downloadingObj[this.categoria]){
+            this.downloading = true;
+          }
+
+        } 
       });
       this._CL.audioSubscriptions(this.audio, this.medias, this.interval);
     }
@@ -78,7 +96,8 @@ export class CategoriaCPage implements OnInit {
       }else{
         let filesArray:any = this.downloadServ.generateFilePathArray(this.medias, this.categoria);
         this.downloadServ.switchCordovaAndDataDirectories(filesArray, this.categoria);
-        this.downloadIconColor = "success"
+        this.downloadIconColor = "success";
+        this.downloading = true;
       }
     }
 
@@ -109,5 +128,4 @@ export class CategoriaCPage implements OnInit {
         this._CL.destroyComponent( this.interval, this.audio, this.medias);
         this._CL.grabarSegundosMeditados(this.timer);
     }
-
 }

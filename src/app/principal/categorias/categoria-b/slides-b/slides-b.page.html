@@ -12,10 +12,15 @@
         </ion-text>
     </div>
     <ion-slides #slidesElem>
-        <ion-slide *ngFor="let slide of slides" (click)="nextSlide()">
-              <p class="texto-slide">
-                {{slide.texto}}
-              </p>
+        <ion-slide *ngFor="let slide of slides" (click)="nextSlide()" style="text-transform: none; 
+            flex-wrap:wrap;    
+            padding-top: 30vh;
+            padding-bottom: 22vh;">
+              <div class="texto-slide" *ngFor="let parrafo of slide.parrafos" style="margin-top: -1vh;">
+                <p [innerHtml] = "parrafo + '<br>'" >
+                </p>
+              </div>
+              
         </ion-slide>
     </ion-slides>
 

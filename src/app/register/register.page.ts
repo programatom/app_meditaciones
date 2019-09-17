@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, ValidationErrors } from '@angular/forms';
 import { NavController } from '@ionic/angular';
 import { ToastService, AuthService, LocalStorageService } from '../services/services.index';
 import { UserDataService } from '../services/user-data/user-data.service';
+import { DOCUMENT } from '@angular/platform-browser';
 
 @Component({
     selector: 'app-register',
@@ -18,7 +19,8 @@ export class RegisterPage implements OnInit {
         private toastServ: ToastService,
         private auth: AuthService,
         private localStorageServ: LocalStorageService,
-        private userDataServ: UserDataService
+        private userDataServ: UserDataService,
+        @Inject(DOCUMENT) private document: Document
     ) {
 
         this.register = this.formBuilder.group({
@@ -75,14 +77,19 @@ export class RegisterPage implements OnInit {
 
     registerFN(data){
       console.log("Registración de: " , data)
+      this.document.getElementById("splash").style.visibility = "visible";
       this.auth.register(data).subscribe((respuesta)=>{
         if(respuesta.status == "success"){
           let token = respuesta.data.api_token;
           let user = respuesta.data;
           this.localStorageServ.insertAndInstantiateValue("token" , token).then(()=>{
+            this.document.getElementById("splash").style.visibility = "visible";
             this.userDataServ.gatherUserData(true, user).then(()=>{
-              this.toastServ.presentToast("Bienvenido a MeditAr App " + user.name + ". Nuestra app es totalmente gratuita, disfruta de nuestras meditaciones y respirá.", "success");
-              this.navCtrl.navigateForward("/tabs/principal");
+              setTimeout(()=>{
+                this.document.getElementById("splash").style.visibility = "hidden";
+                this.toastServ.presentToast("Bienvenido a MeditAr App " + user.name + ". Nuestra app es totalmente gratuita, disfruta de nuestras meditaciones y respirá.", "success");
+                this.navCtrl.navigateForward("/tabs/principal");
+              },1800)
             })
           });
         }else{

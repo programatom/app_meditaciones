@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-login-or-register',
@@ -10,7 +10,8 @@ export class LoginOrRegisterPage implements OnInit {
 
   initLogo = false;
 
-  constructor(private navCtrl: NavController) { }
+  constructor(private navCtrl: NavController,
+              private plt:Platform) { }
 
   ngOnInit() {
 

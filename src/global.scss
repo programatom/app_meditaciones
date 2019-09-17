@@ -20,7 +20,7 @@
 }
 
 .modal-email-friend .modal-wrapper {
-   height: 30%;
+   height: 39%;
    width:80%;
    top: 30%;
    border-radius: 5vw;
@@ -30,6 +30,13 @@
    position: absolute;
    display: block;
 }
+
+.posicion-texto-explicativo{
+  position: absolute;
+  bottom: 3vw;
+  text-align: center;
+  width: 90%;
+ }
 
 .zona-libre-de-click{
   z-index: 999;
@@ -75,6 +82,11 @@ ion-input{
   transform: translateY(4px);
 }
 
+.play-button-circle:active{
+  transform: translateY(4px);
+}
+
+
 .categoria-A-fondo {
   background-color: var(--ion-color-libroMeditacion2);
   background-image: url("./assets/imgs/mandala-mitad-1.png") !important;
@@ -102,6 +114,14 @@ ion-input{
 .categoria-D-fondo {
   background-color: var(--ion-color-libroMeditacion3);
   background-image: url("./assets/imgs/image-23.png") !important;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: right;
+}
+
+.categoria-E-fondo {
+  background-color: var(--ion-color-libroMeditacion4);
+  background-image: url("./assets/imgs/image-20.png") !important;
   background-repeat: no-repeat;
   background-size: contain;
   background-position: right;

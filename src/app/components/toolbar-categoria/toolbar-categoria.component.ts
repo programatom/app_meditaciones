@@ -10,7 +10,8 @@ export class ToolbarCategoriaComponent implements OnInit {
   @Output() dismiss: EventEmitter<any> = new EventEmitter();
   @Output() download: EventEmitter<any> = new EventEmitter();
   @Input("downloadIconColor") downloadIconColor:string;
-  downloading = false;
+  @Input("downloading") downloading:boolean;
+  @Input("categoria") categoria:string;
   constructor() { }
 
 

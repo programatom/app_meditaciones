@@ -12,7 +12,9 @@ import { DOCUMENT } from '@angular/platform-browser';
 export class HttpService {
 
   token:string;
-  splashIgnore = ["http://meditar-app.com.ar/public/api/actualizarDataUser"];
+  splashIgnore = ["http://meditar-app.com.ar/public/api/actualizarDataUser", 
+                  "http://meditar-app.com.ar/public/api/login",
+                  "http://meditar-app.com.ar/public/api/register"];
 
   constructor(private http: HttpClient,
               private localStorageServ: LocalStorageService,
@@ -26,9 +28,8 @@ export class HttpService {
       'Accept': 'application/json',
       'Authorization': 'Bearer ' + this.token
     }
-    if(url == ""){
-
-    }
+    console.log("HEADER GET: ")
+    console.log(JSON.stringify(headerDict));
 
     const requestOptions = {
       headers: new HttpHeaders(headerDict),

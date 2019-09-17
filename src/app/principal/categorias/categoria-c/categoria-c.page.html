@@ -1,6 +1,6 @@
-<app-toolbar-categoria (dismiss) = "dismiss()" (download)="download($event)" [downloadIconColor]="downloadIconColor">
-
+<app-toolbar-categoria (dismiss) = "dismiss()" (download)="download($event)" [downloadIconColor]="downloadIconColor" [downloading]="downloading" [categoria] = "'c'"> 
 </app-toolbar-categoria>
+
 <ion-content padding scrollY="false">
     <ion-slides #slides>
         <ion-slide *ngFor="let media of medias; let i = index">
@@ -19,7 +19,7 @@
                   </app-progress-bar>
                 </ion-col>
                 <ion-col size="12" class="center" [ngClass]="{'fadeIn': media.fadeIn}">
-                  <ion-text color="light" attr.id="{{media.id_minutero}}">{{minutero}}</ion-text>
+                  <ion-text color="light" attr.id="{{media.id_minutero}}">{{media.minutero ? media.minutero: '00:00'}}</ion-text>
                 </ion-col>
                 <ion-col size="12" class="center">
                   <app-loader categoria = "a" attr.id="{{media.id_loader}}"></app-loader>

@@ -14,6 +14,8 @@ const routes: Routes = [
   { path: 'slides-c', loadChildren: './principal/categorias/categoria-c/slides-c/slides-c.module#SlidesCPageModule' },
   { path: 'categoria-d', loadChildren: './principal/categorias/categoria-d/categoria-d.module#CategoriaDPageModule' },
   { path: 'slides-d', loadChildren: './principal/categorias/categoria-d/slides-d/slides-d.module#SlidesDPageModule' },
+  { path: 'categoria-e', loadChildren: './principal/categorias/categoria-e/categoria-e.module#CategoriaEPageModule' },
+  { path: 'slides-e', loadChildren: './principal/categorias/categoria-e/slides-e/slides-e.module#SlidesEPageModule' }
 
 ];
 @NgModule({

@@ -31,10 +31,20 @@
     </ion-row>
 
     <ion-slides [options] = "slidesOptions" *ngIf="categoriasDescargadas.length > 0">
-      <ion-slide *ngFor="let categoriaDescargada of categoriasDescargadas">
-          <app-categoria-a-mini (click)="irACategoria('categoria_a')">
+      <ion-slide *ngFor="let nombre of categoriasDescargadas">
+
+          <app-categoria-a-mini *ngIf ="nombre == 'categoria_a'" (click)="irACategoria('categoria_a')">
 
           </app-categoria-a-mini>
+          <app-categoria-b-mini *ngIf ="nombre == 'categoria_b'" (click)="irACategoria('categoria_b')">
+
+          </app-categoria-b-mini>
+          <app-categoria-c-mini *ngIf ="nombre == 'categoria_c'" (click)="irACategoria('categoria_c')">
+
+          </app-categoria-c-mini>
+          <app-categoria-e-mini *ngIf ="nombre == 'categoria_e'" (click)="irACategoria('categoria_e')">
+
+          </app-categoria-e-mini>
       </ion-slide>
     </ion-slides>
     <br><br>
@@ -210,5 +220,10 @@
         </ion-item>
 
     </div>
+    <ion-button expand="block" type="submit" (click)='abrirContribuiModal()'>
+        <ion-text color="light">
+            Contribuí con nosotros
+        </ion-text>
+    </ion-button>
 
 </ion-content>

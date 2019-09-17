@@ -26,7 +26,7 @@ export class PrincipalPage implements OnInit {
         private categoriaNavigation: CategoriasNavigatorService,
         private statusBar: StatusBar) {
         this.userData = this.userDataServ.userData;
-        this.statusBar.styleDefault();
+        this.statusBar.styleLightContent();
     }
 
     ngOnInit() {
@@ -65,7 +65,7 @@ export class PrincipalPage implements OnInit {
     checkInitializedCategorie(categoria) {
         let isInit = this.categoriaLogic.checkInitializedCategorie(categoria);
         console.log("Categoria is init: " + isInit);
-        if (isInit) {
+        if (isInit || categoria == "categoria_e") {
           this.categoriaNavigation.categoriasSwitchNavigation(categoria);
         } else {
           this.categoriaNavigation.slidesSwitchNavigation(categoria);

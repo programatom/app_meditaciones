@@ -1,8 +1,7 @@
 <div class="content">
   <ion-icon name="arrow-back" color="light" class="back-icon" (click)="dismissClick()">
   </ion-icon>
-  <ion-icon [color]="downloadIconColor" name="md-download" class="download" (click)="toggle()" id="downloadicon"></ion-icon>
-  <!--
-    <app-loader class="position-loader" *ngIf="downloading"></app-loader>
-    -->
+  <ion-icon [color]="downloadIconColor" name="md-download" class="download" (click)="toggle()" id="downloadicon" *ngIf="!downloading"></ion-icon>
+
+  <app-loader *ngIf="downloading" categoria = "LOAD"></app-loader>
 </div>

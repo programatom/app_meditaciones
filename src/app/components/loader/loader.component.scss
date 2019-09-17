@@ -30,6 +30,10 @@
   background-color: rgb(234, 185, 167);
 }
 
+.sk-fading-circle .sk-circle-LOAD:before {
+  background-color: var(--ion-color-success);
+}
+
 
 .sk-fading-circle .sk-circle2 {
   -webkit-transform: rotate(30deg);

@@ -57,14 +57,14 @@ export class LocalStorageService {
 
 
   insertAndInstantiateValue(key, value) {
-    return new Promise((resolve) => {
+    return new Promise( (resolve) => {
       if (this.plt.is('cordova')) {
-        this.storage.ready().then(() => {
+        this.storage.ready().then( async () => {
           if (typeof value === "object") {
-            this.insertValue(true, key, value)
+            await this.insertValue(true, key, value)
             resolve(this.objResponse);
           } else {
-            this.insertValue(false, key, value)
+            await this.insertValue(false, key, value)
             resolve(this.objResponse);
           }
         }).catch((error)=>{
@@ -94,8 +94,8 @@ export class LocalStorageService {
             "status": "success",
             "mensaje": 'Se guardó el value' + value + ' en la key: ' + key + ' con éxito'
           }
+          return;
         });
-        return;
       } else {
         localStorage.setItem(key, JSON.stringify(value));
         this.instantiate(key, value);

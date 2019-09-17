@@ -3,6 +3,7 @@ import { HttpService } from '../http.service';
 import { UserDataService } from '../user-data/user-data.service';
 import { URL_SERVICES, URL_ASSETS } from 'src/config/config';
 import { Events } from '@ionic/angular';
+import { File } from '@ionic-native/file/ngx';
 
 import { DOCUMENT } from '@angular/platform-browser';
 import { DownloadService } from '../download/download.service';
@@ -23,6 +24,8 @@ export class CategoriasLogicService {
   position_interval;
   audioIsPaused = true;
   currentAudio:MediaObject;
+  blockPlayFN = false;
+  callbackDownload;
 
   constructor(private http:HttpService,
               private userDataServ: UserDataService,
@@ -33,7 +36,8 @@ export class CategoriasLogicService {
               private localStorageServ: LocalStorageService,
               private sanitizer:DomSanitizer,
               private media:Media,
-              private plt: Platform) {
+              private plt: Platform,
+              private files:File) {
                 this.token = this.userDataServ.token;
               }
 
@@ -101,7 +105,6 @@ export class CategoriasLogicService {
 
 
   fetchAudiosCategoria(categoria){
-
     let url = URL_SERVICES + "audiosCategoria/" + categoria;
     return this.http.httpGet(url);
   }
@@ -158,7 +161,11 @@ export class CategoriasLogicService {
       this.currentAudio.seekTo(newTime * 1000);
       if(resume){
         medias[this.index].icon = "pause";
-        this.currentAudio.play();
+        var iOSPlayOptions = {
+          numberOfLoops: 1,
+          playAudioWhenScreenIsLocked : true
+        };
+        this.currentAudio.play(iOSPlayOptions);
       }
     } else {
       let newTime = Math.round(audio.duration * progressPercentage);
@@ -191,8 +198,7 @@ export class CategoriasLogicService {
     return;
   }
 
-
-  processUrls(medias){
+   serverAudios(){
     let validMimes = ["mp4" ,"mp3"];
     this.audiosCategoria = this.audiosCategoria.filter((value)=> {
         if(validMimes.includes(value.split(".")[1])){
@@ -201,8 +207,32 @@ export class CategoriasLogicService {
           return false;
         }
     });
+    return;
+   }
+   async processUrls(medias, categoria){
+     console.log("PROCESS URLS");
+    if(this.plt.is("cordova")){
+      let directory = this.downloadServ.getDeviceDirectory();
+      let responseDirectory = await this.downloadServ.getCategoriaDirectory(categoria, directory);
+      if(responseDirectory["found"]){
+        console.log("DIRECTORY FOUND");
+        console.log(JSON.stringify(responseDirectory["dir"]));
+        responseDirectory["dir"] = responseDirectory["dir"].reverse();
+        this.audiosCategoria = [];
+        for(let i = 0; i < responseDirectory["dir"].length; i ++){
+          this.audiosCategoria.push(responseDirectory["dir"][i].nativeURL);
+        }
+      } else {
+        this.serverAudios();
+      }
+
+    } else {
+      this.serverAudios();
+    }
+
+   
     console.log("Audios despues del filtro");
-    console.log(this.audiosCategoria)
+    console.log(JSON.stringify(this.audiosCategoria));
     this.audiosCategoria.filter((value)=>{
       medias.push({
         "url": value,
@@ -303,6 +333,10 @@ export class CategoriasLogicService {
 
       this.movePlayButton("play-button-" + index);
 
+      if(this.blockPlayFN){
+        return;
+      }
+
       var isPaused = this.audioIsPausedFN(audio);
       
       console.log("EL AUDIO ESTA PAUSADO: ", isPaused);
@@ -336,7 +370,11 @@ export class CategoriasLogicService {
   audioObjPlay(audio, callbackMinutero, medias){
     if(this.plt.is("cordova")){
       console.log("PLAY MEDIA AUDIO");
-      this.currentAudio.play();
+      var iOSPlayOptions = {
+        numberOfLoops: 1,
+        playAudioWhenScreenIsLocked : true
+      };
+      this.currentAudio.play(iOSPlayOptions);
       console.log("SET VOLUME TO 1 JUST IN CASE");
       this.currentAudio.setVolume(1.0);
 
@@ -356,17 +394,23 @@ export class CategoriasLogicService {
   }
 
   async init(medias, audio, downloadIconColor, categoria, callback){
-
+      // VERIFICO QUE EL ARRAY DE AUDIOS NO VIENE VACIO 
       if(medias[0] != undefined){
-        this.initNewAudio(medias[0].url, 0, audio, medias);
+        //INICIALIZO EL PRIMER AUDIO DEL ARRAY
+        setTimeout(()=>{
+          console.log("SE INICIALIZA EL AUDIO");
+          this.initNewAudio(medias[0].url, 0, audio, medias);
+        }, 300);
+      } else {
+        console.log("No se encontró el array de medias")
       }
 
 
       let directory = this.downloadServ.getDeviceDirectory();
 
       if(directory == null){
-        console.log(this.localStorageServ.localStorageObj[categoria])
-        console.log(categoria)
+        console.log(this.localStorageServ.localStorageObj[categoria]);
+        console.log(categoria);
         if(this.localStorageServ.localStorageObj[categoria] != undefined){
           console.log("Categoria descargada..")
           downloadIconColor = "success";
@@ -378,64 +422,132 @@ export class CategoriasLogicService {
         let responseDirectory = await this.downloadServ.getCategoriaDirectory(categoria, directory);
         if(responseDirectory["found"]){
           downloadIconColor = "success";
-          let filesArray:any = this.downloadServ.generateFilePathArray(medias, categoria);
-          let resultFiles = await this.downloadServ.switchCordovaAndDataDirectories(filesArray,categoria);
-          console.log("Resultado de files en categoria: " + resultFiles)
+          let filesArray:any = responseDirectory["dir"];
+
+          console.log("Resultado de files en categoria: " + JSON.stringify(filesArray))
+          /*
+        [{"isFile":true,
+        "isDirectory":false,
+        "name":"1.mp3",
+        "fullPath":"/categoria_a/1.mp3",
+        "filesystem":"<FileSystem: library-nosync>",
+        "nativeURL":"file:///Users/tomasgarciapineiro/Library/Developer/CoreSimulator/Devices/C8794599-26B2-4152-A8CE-C1469997948F/data/Containers/Data/Application/F8D4C026-355C-44CC-BAD9-81958891ABF3/Library/NoCloud/categoria_a/1.mp3"}
+        ]
+          */
+
         }else{
           downloadIconColor = "light";
         }
       }
+      this.downloadServ.callbackDownload = callback;
       callback(downloadIconColor);
   }
 
-  initNewAudio(url,index, audio, medias, play = false, callbackMinutero = undefined){
+
+
+  async initNewAudio(url,index, audio, medias, play = false, callbackMinutero = undefined){
+    /*
+    if(url.substring(0,4) == "file"){
+      this.url = url.substring(8);
+      this.index = index;
+      audio.src = get;
+      audio.load();
+      return;
+    }
+    */
 
     if(this.plt.is("cordova")){
-      var path = URL_ASSETS + url;
-      console.log("EL PATH A CARGAR EN EL MEDIA OBJECT")
+      // busca file VER EN ANDROID SI ES IGUAL EL PREFIJO
+      var path;
+      console.log("FULL URL: " + url)
+      if(url.substring(0,7) == "cdvfile"){
+        //path = url.substring(10); para sacarle el cdvfile
+        path = url;
+        // VIENE EL FULL PATH EN IOS hay que sacarle el file://
+        //path = "/Library/NoCloud/categoria_a/1.mp3";
+        //console.log("CREATING FILE");
+        //await this.files.createFile(this.files.tempDirectory,"audio.mp4",true);
+
+        //path = this.files.tempDirectory.replace(/^file:\/\//, '') + 'audio.mp3';
+
+      } else {
+        path = URL_ASSETS + url;
+      }
+      console.log("PATH SUBR " + path.substring(0,7));
+      console.log("EL PATH A CARGAR EN EL MEDIA OBJECT");
       console.log(path);
+      //path = "https://www.kozco.com/tech/piano2-CoolEdit.mp3";
       console.log("EL INDEX A CARGAR: ");
       console.log(index);
       this.currentAudio = this.media.create(path);
-      this.currentAudio.onStatusUpdate.subscribe((ev)=>
-      {
-        console.log("ON STATUS UPDATE CURRENT MEDIA AUDIO");
-        console.log(ev);
-
-        if(ev == 2){
-          this.audioIsPaused = false;
-        }
-
-        if(ev == 3){
-          this.audioIsPaused = true;
-        }
-
-      });
-
       console.log("PLAY MEDIA AUDIO");
-      this.currentAudio.play();
-      console.log("SET VOLUME MEDIA AUDIO");
       this.currentAudio.setVolume(0.0);
+      var iOSPlayOptions = {
+        numberOfLoops: 1,
+        playAudioWhenScreenIsLocked : true
+      };
+      this.currentAudio.play(iOSPlayOptions);
+      console.log("SET VOLUME MEDIA AUDIO");
       var duration;
+      this._document.getElementById(medias[index].id_loader).style.visibility = "visible";
+      this.blockPlayFN = true;
       var interval = setInterval(()=>{
         if(duration > 0){
           console.log("STOP MEDIA AUDIO");
-          this.currentAudio.setVolume(1.0);
           this.currentAudio.stop();
+          this.currentAudio.seekTo(0.0);
           this.audioIsPaused = true;
           medias[this.index].audioDuration = parseInt(duration);
+          this._document.getElementById(medias[index].id_loader).style.visibility = "hidden";
+          this.blockPlayFN = false;
           console.log("SE CONSIGUE LA DURACION DEL AUDIO QUE ES");
           console.log(duration);
+          this.currentAudio.onError.subscribe((err)=>{
+            console.log("AUDIO ERROR : ")
+            console.log(JSON.stringify(err))
+          });
+          this.currentAudio.onSuccess.subscribe((success)=>{
+            console.log("AUDIO SUCCESS: ");
+            console.log(JSON.stringify(success));
+          })
+          this.currentAudio.onStatusUpdate.subscribe((ev)=>
+          {
+            console.log("ON STATUS UPDATE CURRENT MEDIA AUDIO");
+            console.log(ev);
+
+            if(ev == 2){
+              console.log("EL AUDIO ESTA EN PLAY");
+              this.audioIsPaused = false;
+            }
+
+            if(ev == 3){
+              console.log("EL AUDIO ESTA EN PAUSA");
+              this.audioIsPaused = true;
+            }
+
+            if(ev == 4){
+              // AUDIO FINISH
+              console.log("EL AUDIO TERMINÓ");
+              this.audioIsPaused = true;
+            }
+
+          });
           clearInterval(interval);
           if(play){
+            console.log("SE DA EL PLAY DESPUES DE INICIAR EL AUDIO")
             setTimeout(()=>{
               this.audioObjPlay(audio, callbackMinutero, medias)
             },1000);
           }
         } else {
+          console.log("DURATION IS NEGATIVE");
           duration = this.currentAudio.getDuration();
+          console.log(duration)
         }
-      }, 100);
+      }, 10);
+      setTimeout(()=>{
+        clearInterval(interval);
+      }, 30000)
       this.index = index;
     } else{
       var get = "http://meditar-app.com.ar/media/audio.php?location=" + url;

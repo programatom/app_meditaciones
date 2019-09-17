@@ -9,6 +9,7 @@ import { PerfilPage } from './perfil.page';
 import { PerfilPageRoutingModule } from './perfil.router.module';
 import { EmailModalPageModule } from './email-modal/email-modal.module';
 import { ComponentsModule } from '../components/components.module';
+import { ContribuiModalPageModule } from './contribui-modal/contribui-modal.module';
 
 
 
@@ -19,6 +20,7 @@ import { ComponentsModule } from '../components/components.module';
     IonicModule,
     PerfilPageRoutingModule,
     EmailModalPageModule,
+    ContribuiModalPageModule,
     ComponentsModule
   ],
   declarations: [PerfilPage]

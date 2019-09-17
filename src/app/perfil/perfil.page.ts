@@ -7,6 +7,7 @@ import { ObjUserData } from 'src/interfaces/interfaces';
 import { PuntajeCalculatorService } from '../services/puntaje-calculator/puntaje-calculator.service';
 import { ModalController } from '@ionic/angular';
 import { EmailModalPage } from './email-modal/email-modal.page';
+import { ContribuiModalPage } from './contribui-modal/contribui-modal.page';
 import { CategoriasNavigatorService } from '../services/categorias-logic/categorias-navigator.service';
 
 @Component({
@@ -30,12 +31,12 @@ export class PerfilPage implements OnInit {
 
     amigos = [];
 
-    categoriasDescargadas:Array<{
-      "nombre":string
-    }> = [];
+    categoriasDescargadas = [];
 
     categoriasNombres = {
-      "categoria_a":"Sonidos Binaurales"
+      "categoria_a":"Sonidos Binaurales",
+      "categoria_b":"Meditaciones",
+      "cateogria_c":"Música relajante"
     }
 
     slidesOptions;
@@ -86,13 +87,14 @@ export class PerfilPage implements OnInit {
       this.categoriasDescargadas = [];
       this.downloadServ.getCategoriaDirectory("", directory).then((responseDirectory)=>{
         if(responseDirectory["found"]){
+
           console.log("Respuesta directory" + JSON.stringify(responseDirectory["dir"]));
           let directories = responseDirectory["dir"];
+
           for(let i = 0; i < directories.length; i ++){
-            let nombre = this.categoriasNombres[directories[i].name];
-            this.categoriasDescargadas.push({
-              "nombre": nombre,
-            });
+            let nombre = directories[i].name;
+            this.categoriasDescargadas.push(nombre);
+            console.log("NOMBRES CATs: " + JSON.stringify(this.categoriasDescargadas))
           }
         }
       })
@@ -106,10 +108,8 @@ export class PerfilPage implements OnInit {
         let split = key.split("_");
         if(split.length > 0){
           if(split[0] == "categoria"){
-            let nombreCategoria = this.categoriasNombres[key];
-            this.categoriasDescargadas.push({
-              "nombre": nombreCategoria,
-            });
+            //let nombreCategoria = this.categoriasNombres[key];
+            this.categoriasDescargadas.push(key);
           }
         }
       }
@@ -255,32 +255,44 @@ export class PerfilPage implements OnInit {
       }
     }
 
-    rechazarSolicitud(index,id){
-      this.amigos.splice(index,1);
-      this.friendsServ.rechazarSolicitud({
-        "id" : id
-      },this.token).subscribe((respuesta)=>{
-        console.log(respuesta);
+  rechazarSolicitud(index,id){
+    this.amigos.splice(index,1);
+    this.friendsServ.rechazarSolicitud({
+      "id" : id
+    },this.token).subscribe((respuesta)=>{
+      console.log(respuesta);
+    });
+  }
+
+  logout(){
+    let buttons = [
+      {
+        "text":"Confirmar",
+        "handler":()=>{
+          this.localStorageServ.eliminateAllValuesInStorage().then(()=>{
+            this.navCtrl.navigateBack("/login-or-register");
+          });
+        }
+      },
+      {
+        "text":"Cancelar",
+        "role":"cancel"
+      }
+    ];
+    let inputs = [];
+    this.toastServ.presentAlert("Salir de la sesión", "¿Está seguro que quiere salir de la sesión?",inputs,buttons,"")
+  }
+
+    async abrirContribuiModal(){
+      let modal = await this.contribuiModal();
+      modal.present();
+    }
+
+    async contribuiModal(){
+      return this.modalCtrl.create({
+        component: ContribuiModalPage,
       });
     }
 
-    logout(){
-      let buttons = [
-        {
-          "text":"Confirmar",
-          "handler":()=>{
-            this.localStorageServ.eliminateAllValuesInStorage().then(()=>{
-              this.navCtrl.navigateBack("/login-or-register");
-            });
-          }
-        },
-        {
-          "text":"Cancelar",
-          "role":"cancel"
-        }
-      ];
-      let inputs = [];
-      this.toastServ.presentAlert("Salir de la sesión", "¿Está seguro que quiere salir de la sesión?",inputs,buttons,"")
-    }
 
 }
