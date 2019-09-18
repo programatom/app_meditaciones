@@ -21,6 +21,7 @@ export class EmailModalPage implements OnInit {
               private userDataService: UserDataService,
               @Inject(DOCUMENT) private document: Document) {
                 this.token = this.userDataServ.token;
+                
                 if(this.userDataServ.userData.nombre=="admin"){
                   this.email = "tomas.garcia.pineiro@gmail.com"
                 }

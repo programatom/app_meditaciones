@@ -23,7 +23,7 @@ export class ContribuiModalPage implements OnInit {
 
   contacto(){
     let email = {
-      cc: 'claudiaroiz59@gmail.com',
+      to: 'claudiaroiz59@gmail.com',
       subject: "Contacto MeditAr"
     }
     this.emailComposer.open(email);
