@@ -1,0 +1,203 @@
+Searching 123 files for "DOCUMENT"
+
+/Users/tomasgarciapineiro/Desktop/proyecto meditacion/meditacion-ionic-4-limpia/src/app/login/login.page.ts:
+    4  import { FormBuilder, FormGroup } from '@angular/forms';
+    5  import { UserDataService } from '../services/user-data/user-data.service';
+    6: import { DOCUMENT } from '@angular/common';
+    7  
+    8  @Component({
+    .
+   22                public localStorageServ: LocalStorageService,
+   23                public userDataServ:UserDataService,
+   24:               @Inject(DOCUMENT) public document: Document
+   25                ) {
+   26                  this.login = this.formBuilder.group({
+   ..
+   45          let nombre = respuesta.data.name;
+   46          console.log("SE INSTANCIA EL TOKEN EN EL LS")
+   47:         this.document.getElementById("splash").style.visibility = "visible";
+   48          this.localStorageServ.insertAndInstantiateValue("token" , token).then(()=>{
+   49            this.userDataServ.gatherUserData(false).then(()=>{
+   50:             this.document.getElementById("splash").style.visibility = "hidden";
+   51              this.toastServ.presentToast("Bienvenido a MeditAr App " + nombre + ". Nuestra app es totalmente gratuita, disfruta de nuestras meditaciones y respirá.", "success");
+   52              this.navCtrl.navigateForward("/tabs/principal");
+
+/Users/tomasgarciapineiro/Desktop/proyecto meditacion/meditacion-ionic-4-limpia/src/app/perfil/email-modal/email-modal.page.ts:
+    3  import { UserDataService } from 'src/app/services/user-data/user-data.service';
+    4  import { ModalController } from '@ionic/angular';
+    5: import { DOCUMENT } from '@angular/platform-browser';
+    6  
+    7  @Component({
+    .
+   20                private modalCtrl: ModalController,
+   21                private userDataService: UserDataService,
+   22:               @Inject(DOCUMENT) private document: Document) {
+   23                  this.token = this.userDataServ.token;
+   24                  
+   ..
+   36        "email":this.email
+   37      }
+   38:     this.document.getElementById("enviar").setAttribute("disabled", "true");
+   39      this.friendsServ.enviarFriendRequest(data, this.token).subscribe((respuesta)=>{
+   40        console.log(respuesta);
+   41:       this.document.getElementById("enviar").setAttribute("disabled", "false");
+   42        if(respuesta.status == "success"){
+   43          if(respuesta.data == "email_sent"){
+
+/Users/tomasgarciapineiro/Desktop/proyecto meditacion/meditacion-ionic-4-limpia/src/app/principal/categorias/categoria-d/categoria-d.page.ts:
+    4  import { Timer } from 'easytimer.js';
+    5  import { DownloadService, ToastService } from 'src/app/services/services.index';
+    6: import { DOCUMENT } from '@angular/common';
+    7  
+    8  @Component({
+    .
+   72      constructor(private navCtrl: NavController,
+   73          public _CL: CategoriasLogicService,
+   74:         @Inject(DOCUMENT) private document: Document) {
+   75  
+   76          for (var media of this.medias) {
+   ..
+   83  
+   84      ngOnInit(){
+   85:       this.document.getElementById("downloadicon").style.display = "none";
+   86          //this.slidesSubscriptions();
+   87      }
+   ..
+  116                      let previousMedia = this.medias[prevIndex];
+  117                      if(previousMedia.type == "video"){
+  118:                         let prevVideo = document.getElementById(prevIndex);
+  119                          this.showHide(prevVideo, false);
+  120                      }                    
+  ...
+  127                      let previousMedia = this.medias[prevIndex];
+  128                      if(previousMedia.type == "video"){
+  129:                         let prevVideo = document.getElementById(prevIndex);
+  130                          this.showHide(prevVideo, false);
+  131                      }                    
+  ...
+  138      openMedia(mediatype, index){
+  139          if(mediatype == "video"){
+  140:             let video = document.getElementById(index);
+  141              this.showHide(video);
+  142          } else {
+
+/Users/tomasgarciapineiro/Desktop/proyecto meditacion/meditacion-ionic-4-limpia/src/app/register/register.page.ts:
+    4  import { ToastService, AuthService, LocalStorageService } from '../services/services.index';
+    5  import { UserDataService } from '../services/user-data/user-data.service';
+    6: import { DOCUMENT } from '@angular/platform-browser';
+    7  
+    8  @Component({
+    .
+   21          public localStorageServ: LocalStorageService,
+   22          public userDataServ: UserDataService,
+   23:         @Inject(DOCUMENT) public document: Document
+   24      ) {
+   25  
+   ..
+   78      registerFN(data){
+   79        console.log("Registración de: " , data)
+   80:       this.document.getElementById("splash").style.visibility = "visible";
+   81        this.auth.register(data).subscribe((respuesta)=>{
+   82          if(respuesta.status == "success"){
+   ..
+   84            let user = respuesta.data;
+   85            this.localStorageServ.insertAndInstantiateValue("token" , token).then(()=>{
+   86:             this.document.getElementById("splash").style.visibility = "visible";
+   87              this.userDataServ.gatherUserData(true, user).then(()=>{
+   88:               this.document.getElementById("splash").style.visibility = "hidden";
+   89                this.toastServ.presentToast("Bienvenido a MeditAr App " + user.name + ". Nuestra app es totalmente gratuita, disfruta de nuestras meditaciones y respirá.", "success");
+   90                this.navCtrl.navigateForward("/tabs/principal");
+
+/Users/tomasgarciapineiro/Desktop/proyecto meditacion/meditacion-ionic-4-limpia/src/app/services/categorias-logic/categorias-logic.service.ts:
+    6  import { File } from '@ionic-native/file/ngx';
+    7  
+    8: import { DOCUMENT } from '@angular/platform-browser';
+    9  import { DownloadService } from '../download/download.service';
+   10  import { LocalStorageService } from '../local-storage/local-storage.service';
+   ..
+   31                private userDataServ: UserDataService,
+   32                private event: Events,
+   33:               @Inject(DOCUMENT) private _document: Document,
+   34                private userData: UserDataService,
+   35                private downloadServ: DownloadService,
+   ..
+  256      for (let i = 0; i < length; i ++){
+  257        setTimeout(()=>{
+  258:         this._document.getElementById(medias[i].id_loader).style.visibility = "hidden";
+  259:         this._document.getElementById(medias[i].id_minutero).style.visibility = "hidden";
+  260:         this._document.getElementById(medias[i].id_progress).style.visibility = "hidden";
+  261        },100)
+  262      }
+  ...
+  312    movePlayButton(id) {
+  313      console.log(id);
+  314:     var elem = document.getElementById(id);   
+  315      function frame() {
+  316        if (top == 0) {
+  ...
+  351            timer.start();
+  352            medias[index].icon = "pause";
+  353:           if(this._document.getElementById(medias[index].id_progress).style.visibility == "hidden"){
+  354              setTimeout(()=>{
+  355:               this._document.getElementById(medias[index].id_progress).style.visibility = "visible";
+  356:               this._document.getElementById(medias[index].id_minutero).style.visibility = "visible";
+  357                medias[index].fadeIn = true;
+  358              },1500);
+  ...
+  490        console.log("SET VOLUME MEDIA AUDIO");
+  491        var duration;
+  492:       this._document.getElementById(medias[index].id_loader).style.visibility = "visible";
+  493        this.blockPlayFN = true;
+  494        var interval = setInterval(()=>{
+  ...
+  499            this.audioIsPaused = true;
+  500            medias[this.index].audioDuration = parseInt(duration);
+  501:           this._document.getElementById(medias[index].id_loader).style.visibility = "hidden";
+  502            this.blockPlayFN = false;
+  503            console.log("SE CONSIGUE LA DURACION DEL AUDIO QUE ES");
+  ...
+  594             console.log("progress");
+  595             if (audio.paused == false) {
+  596:                this._document.getElementById(media[this.index].id_loader).style.visibility = "visible";
+  597                 setTimeout(() => {
+  598:                    this._document.getElementById(media[this.index].id_loader).style.visibility = "hidden";
+  599                 }, 1000);
+  600             }
+
+/Users/tomasgarciapineiro/Desktop/proyecto meditacion/meditacion-ionic-4-limpia/src/app/services/http.service.ts:
+    5  import { ObjRespuestaServidor } from 'src/interfaces/interfaces';
+    6  import { LocalStorageService } from './local-storage/local-storage.service';
+    7: import { DOCUMENT } from '@angular/platform-browser';
+    8  
+    9  @Injectable({
+   ..
+   19    constructor(private http: HttpClient,
+   20                private localStorageServ: LocalStorageService,
+   21:               @Inject(DOCUMENT) private document: Document) {
+   22  
+   23    }
+   ..
+   37      console.log("GET: " + url);
+   38      if(!this.splashIgnore.includes(url)){
+   39:       this.document.getElementById("splash").style.visibility = "visible";
+   40      }
+   41      return this.http.get(url, requestOptions)
+   42        .pipe(
+   43          map((respuesta: any) => {
+   44:           this.document.getElementById("splash").style.visibility = "hidden";
+   45            return respuesta;
+   46          })
+   ..
+   70      console.log("POST: " + url);
+   71      if(!this.splashIgnore.includes(url)){
+   72:       this.document.getElementById("splash").style.visibility = "visible";
+   73      }
+   74  
+   ..
+   83            console.log("sadfasdfasdfasdf");
+   84            console.log(JSON.stringify(respuesta));
+   85:           this.document.getElementById("splash").style.visibility = "hidden";
+   86            return respuesta;
+   87          })
+
+50 matches across 6 files

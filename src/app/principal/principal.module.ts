@@ -10,6 +10,7 @@ import { FriendRequestModalPageModule } from './friend-request-modal/friend-requ
 
 import { CategoriaAPageModule } from './categorias/categoria-a/categoria-a.module';
 import { SlidesAPageModule } from './categorias/categoria-a/slides-a/slides-a.module';
+import { ContribuiModalPageModule } from '../perfil/contribui-modal/contribui-modal.module';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { SlidesAPageModule } from './categorias/categoria-a/slides-a/slides-a.mo
     PrincipalPageRoutingModule,
     FriendRequestModalPageModule,
     CategoriaAPageModule,
-    SlidesAPageModule
+    SlidesAPageModule,
+    ContribuiModalPageModule
   ],
   declarations: [PrincipalPage]
 })

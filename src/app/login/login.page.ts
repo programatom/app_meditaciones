@@ -51,7 +51,7 @@ export class LoginPage implements OnInit {
         this.localStorageServ.insertAndInstantiateValue("token" , token).then(()=>{
           this.userDataServ.gatherUserData(false).then(()=>{
             this.document.getElementById("splash").style.visibility = "hidden";
-            this.toastServ.presentToast("Bienvenido a MeditAr App, " + nombre + ". Nuestra app es totalmente gratuita, disfrutá de nuestras meditaciones y respirá.", "success","top",13000);
+            this.toastServ.presentToast("Bienvenido a MeditAr App. Nuestra app es totalmente gratuita, disfrutá de nuestras meditaciones y respirá.", "success","top",30000);
             this.navCtrl.navigateForward("/tabs/principal");
           })
         });

@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 
 import { Platform, NavController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { LocalStorageService, AuthService } from './services/services.index';
 import { UserDataService } from './services/user-data/user-data.service';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +23,8 @@ export class AppComponent {
     private navCtrl: NavController,
     private localStorageServ: LocalStorageService,
     private userDataServ: UserDataService,
-    private authService: AuthService
+    private authService: AuthService,
+    @Inject(DOCUMENT) private document: Document
   ) {
     this.initializeApp();
   }
@@ -30,7 +32,7 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
 
-
+      this.internetListener();
       this.localStorageServ.searchAndInstantiateKey("token").then((respuesta:{
         status:string
         mensaje:string
@@ -58,6 +60,15 @@ export class AppComponent {
           })
         }
       })
+    });
+  }
+
+  internetListener(){
+    this.document.addEventListener("offline",()=>{
+      console.log("SE DETECTA QUE LA APP ESTÁ OFFLINE")
+    });
+    this.document.addEventListener("online",()=>{
+      console.log("SE DETECTA QUE LA APP ESTÁ ONLINE")
     });
   }
 

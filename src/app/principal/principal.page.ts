@@ -8,6 +8,7 @@ import { CategoriasLogicService } from '../services/categorias-logic/categorias-
 import { CategoriasNavigatorService } from '../services/categorias-logic/categorias-navigator.service';
 import { ModalCategoriasSlidesService } from '../services/categorias-logic/modal-categorias-slides.service';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { ContribuiModalPage } from '../perfil/contribui-modal/contribui-modal.page';
 
 @Component({
     selector: 'app-principal',
@@ -70,6 +71,17 @@ export class PrincipalPage implements OnInit {
         } else {
           this.categoriaNavigation.slidesSwitchNavigation(categoria);
         }
+    }
+
+    async abrirContribuiModal(){
+      let modal = await this.contribuiModal();
+      modal.present();
+    }
+
+    async contribuiModal(){
+      return this.modalCtrl.create({
+        component: ContribuiModalPage,
+      });
     }
 
 }
