@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FriendsService, ToastService, LocalStorageService } from 'src/app/services/services.index';
 import { UserDataService } from 'src/app/services/user-data/user-data.service';
 import { ModalController } from '@ionic/angular';
-import { DOCUMENT } from '@angular/platform-browser';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-email-modal',

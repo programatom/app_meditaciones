@@ -10,8 +10,8 @@ export class LoginOrRegisterPage implements OnInit {
 
   initLogo = false;
 
-  constructor(private navCtrl: NavController,
-              private plt:Platform) { }
+  constructor(public navCtrl: NavController,
+              public plt:Platform) { }
 
   ngOnInit() {
 

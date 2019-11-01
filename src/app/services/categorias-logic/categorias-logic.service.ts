@@ -5,7 +5,7 @@ import { URL_SERVICES, URL_ASSETS } from 'src/config/config';
 import { Events } from '@ionic/angular';
 import { File } from '@ionic-native/file/ngx';
 
-import { DOCUMENT } from '@angular/platform-browser';
+import { DOCUMENT } from '@angular/common';
 import { DownloadService } from '../download/download.service';
 import { LocalStorageService } from '../local-storage/local-storage.service';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -166,6 +166,7 @@ export class CategoriasLogicService {
           playAudioWhenScreenIsLocked : true
         };
         this.currentAudio.play(iOSPlayOptions);
+        this.audioIsPaused = false;
       }
     } else {
       let newTime = Math.round(audio.duration * progressPercentage);
@@ -264,6 +265,7 @@ export class CategoriasLogicService {
 
   slideSubscriptions(slides, intervalInt, audio, medias, timer, intervalReturn){
     slides.ionSlideDidChange.subscribe(() => {
+      console.log("ION SLIDE CHANGE")
         clearInterval(intervalReturn());
         if (medias[this.index] != undefined) {
             if (!this.audioIsPausedFN(audio)) {
@@ -284,6 +286,7 @@ export class CategoriasLogicService {
     if(this.plt.is("cordova")){
       console.log("CURRENT DEVICE AUDIO PAUSED")
       this.currentAudio.pause();
+      this.audioIsPaused = true;
     } else {
       audio.pause();
     }
@@ -338,8 +341,8 @@ export class CategoriasLogicService {
       }
 
       var isPaused = this.audioIsPausedFN(audio);
-      
-      console.log("EL AUDIO ESTA PAUSADO: ", isPaused);
+       
+      console.log("EL AUDIO ESTA PAUSADO: " + isPaused);
       console.log(medias);
       if (!isPaused) {
 
@@ -375,6 +378,7 @@ export class CategoriasLogicService {
         playAudioWhenScreenIsLocked : true
       };
       this.currentAudio.play(iOSPlayOptions);
+      this.audioIsPaused = false;
       console.log("SET VOLUME TO 1 JUST IN CASE");
       this.currentAudio.setVolume(1.0);
 
@@ -487,6 +491,7 @@ export class CategoriasLogicService {
         playAudioWhenScreenIsLocked : true
       };
       this.currentAudio.play(iOSPlayOptions);
+      this.audioIsPaused = false;
       console.log("SET VOLUME MEDIA AUDIO");
       var duration;
       this._document.getElementById(medias[index].id_loader).style.visibility = "visible";
@@ -512,20 +517,21 @@ export class CategoriasLogicService {
           })
           this.currentAudio.onStatusUpdate.subscribe((ev)=>
           {
-            console.log("ON STATUS UPDATE CURRENT MEDIA AUDIO");
-            console.log(ev);
+            console.log("SE EJECUTA EL EVENTO UPDATE DEL MEDIA OBJECT");
+            console.log(ev.toString());
 
-            if(ev == 2){
+            if(ev.toString() == "2"){
+              // CREO QUE ESTE EVENTO NO ESTA FUNCIONADO
               console.log("EL AUDIO ESTA EN PLAY");
               this.audioIsPaused = false;
             }
 
-            if(ev == 3){
+            if(ev.toString() == "3"){
               console.log("EL AUDIO ESTA EN PAUSA");
               this.audioIsPaused = true;
             }
 
-            if(ev == 4){
+            if(ev.toString() == "4"){
               // AUDIO FINISH
               console.log("EL AUDIO TERMINÓ");
               this.audioIsPaused = true;

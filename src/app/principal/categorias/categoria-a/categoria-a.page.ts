@@ -15,8 +15,8 @@ export class CategoriaAPage implements OnInit {
 
 
 
-    @ViewChild('slides') slides;
-    @ViewChild('progress-bar') progress;
+    @ViewChild('slides', {static: false}) slides;
+    @ViewChild('progress-bar',{static: false}) progress;
 
 
     audio = new Audio();
@@ -44,20 +44,23 @@ export class CategoriaAPage implements OnInit {
 
     }
 
-    async ngOnInit() {
-
-
+    ngAfterViewInit(){
       this._CL.progressBarInteractionSubscriptions(this.audio,
-                                                    this.interval,this.medias, this.timer, this.slides,
+                                                   this.interval,this.medias, this.timer, this.slides,
                                                    this.resumeAfterTouchStart, function(minuteroCB){
-                                                     console.log(minuteroCB)
-                                                     this.minutero = minuteroCB;
+                                                   console.log(minuteroCB)
+                                                   this.minutero = minuteroCB;
                                                    });
-      await this._CL.processUrls(this.medias, this.categoria);
-      this._CL.initProgressBarAndLoader(this.medias);
-      this._CL.slideSubscriptions(this.slides,  this.interval, this.audio, this.medias, this.timer, ()=>{
+     this._CL.slideSubscriptions(this.slides,  this.interval, this.audio, this.medias, this.timer, ()=>{
         return this.interval;
       });
+    }
+
+    async ngOnInit() {
+
+      await this._CL.processUrls(this.medias, this.categoria);
+      this._CL.initProgressBarAndLoader(this.medias);
+
       this._CL.init(this.medias, this.audio, this.downloadIconColor, this.categoria, (iconColor)=>{
 
         let split = iconColor.split("-");

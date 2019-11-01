@@ -59,16 +59,18 @@ export class LocalStorageService {
   insertAndInstantiateValue(key, value) {
     return new Promise( (resolve) => {
       if (this.plt.is('cordova')) {
-        this.storage.ready().then( async () => {
+        this.storage.ready().then( () => {
           if (typeof value === "object") {
-            await this.insertValue(true, key, value)
-            resolve(this.objResponse);
+            this.insertValue(true, key, value).then(()=>{
+              resolve(this.objResponse);
+            });
           } else {
-            await this.insertValue(false, key, value)
-            resolve(this.objResponse);
+            this.insertValue(false, key, value).then(()=>{
+              resolve(this.objResponse);
+            });
           }
         }).catch((error)=>{
-          console.log(error)
+          console.log("ERROR EN STORAGE INSERTANDINSTANTIEVALUE");
         })
       } else {
 
@@ -88,14 +90,16 @@ export class LocalStorageService {
 
     if (stringify) {
       if (this.isCordova) {
-        this.storage.set(key, JSON.stringify(value)).then((data)=>{
-          this.instantiate(key, value);
-          this.objResponse = {
-            "status": "success",
-            "mensaje": 'Se guardó el value' + value + ' en la key: ' + key + ' con éxito'
-          }
-          return;
-        });
+        return new Promise((resolve)=>{
+          this.storage.set(key, JSON.stringify(value)).then((data)=>{
+            this.instantiate(key, value);
+            this.objResponse = {
+              "status": "success",
+              "mensaje": 'Se guardó el value' + value + ' en la key: ' + key + ' con éxito'
+            }
+            resolve();
+          });
+        })
       } else {
         localStorage.setItem(key, JSON.stringify(value));
         this.instantiate(key, value);
@@ -107,16 +111,18 @@ export class LocalStorageService {
       }
     } else {
       if (this.isCordova) {
-        this.storage.set(key, value).then((data)=>{
-          console.log(JSON.stringify(data))
-          //console.log('Se guardó el value: ', value, "en la key: ", key,' con éxito');
-          this.instantiate(key, value);
-          this.objResponse = {
-            "status": "success",
-            "mensaje": 'Se guardó el value' + value + ' en la key: ' + key + ' con éxito'
-          }
-        });
-        return;
+        return new Promise((resolve)=>{
+          this.storage.set(key, value).then((data)=>{
+            console.log(JSON.stringify(data));
+            //console.log('Se guardó el value: ', value, "en la key: ", key,' con éxito');
+            this.instantiate(key, value);
+            this.objResponse = {
+              "status": "success",
+              "mensaje": 'Se guardó el value' + value + ' en la key: ' + key + ' con éxito'
+            }
+            resolve();
+          });
+        })
       } else {
         localStorage.setItem(key, value);
         //console.log('Se guardó el value: ' + value + "en la key: " + key + ' con éxito');
@@ -242,7 +248,7 @@ export class LocalStorageService {
   }
 
   instantiate(key, value) {
-
+    console.log("SE INSTANCIA EN EL LOCAL STORAGE EL VALOR :" + value);
     if (this.isJson(value)) {
       this.localStorageObj[key] = this.parse(value);
       return;

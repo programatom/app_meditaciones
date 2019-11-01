@@ -10,7 +10,7 @@ import { CategoriasNavigatorService } from 'src/app/services/categorias-logic/ca
 })
 export class SlidesDPage implements OnInit {
 
-  @ViewChild('slidesElem') slidesElem;
+  @ViewChild('slidesElem',{static: false}) slidesElem;
 
   slides = [{
     "texto":"Imagenes y videos elegidos para relajarte"

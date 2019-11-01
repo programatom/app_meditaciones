@@ -1,9 +1,9 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { AuthService, ToastService, LocalStorageService } from '../services/services.index';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { UserDataService } from '../services/user-data/user-data.service';
-import { DOCUMENT } from '@angular/platform-browser';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -12,16 +12,17 @@ import { DOCUMENT } from '@angular/platform-browser';
 })
 export class LoginPage implements OnInit {
 
-  private login: FormGroup;
+  public login: FormGroup;
+  disable_ingresar = false;
 
 
-  constructor(private navCtrl: NavController,
-              private authServ: AuthService,
-              private formBuilder: FormBuilder,
-              private toastServ: ToastService,
-              private localStorageServ: LocalStorageService,
-              private userDataServ:UserDataService,
-              @Inject(DOCUMENT) private document: Document
+  constructor(public navCtrl: NavController,
+              public authServ: AuthService,
+              public formBuilder: FormBuilder,
+              public toastServ: ToastService,
+              public localStorageServ: LocalStorageService,
+              public userDataServ:UserDataService,
+              @Inject(DOCUMENT) public document: Document
               ) {
                 this.login = this.formBuilder.group({
                     email: [''],
@@ -38,22 +39,24 @@ export class LoginPage implements OnInit {
 
   emailLogin(){
     this.authServ.login(this.login.value).subscribe((respuesta)=>{
+      console.log("RESPUESTA DEL SERVICIO DE LOGIN: ");
       console.log(JSON.stringify(respuesta));
       if(respuesta.status == "success"){
         let token = respuesta.data.api_token;
         let nombre = respuesta.data.name;
-        console.log("SE INSTANCIA EL TOKEN EN EL LS")
+        console.log("SE INSTANCIA EL TOKEN EN EL LS");
+
         this.document.getElementById("splash").style.visibility = "visible";
+        this.disable_ingresar = true;
         this.localStorageServ.insertAndInstantiateValue("token" , token).then(()=>{
-          setTimeout(()=>{
-            this.userDataServ.gatherUserData(false).then(()=>{
-              this.document.getElementById("splash").style.visibility = "hidden";
-              this.toastServ.presentToast("Bienvenido a MeditAr App " + nombre + ". Nuestra app es totalmente gratuita, disfruta de nuestras meditaciones y respirá.", "success");
-              this.navCtrl.navigateForward("/tabs/principal");
-            })
-          }, 1800)
+          this.userDataServ.gatherUserData(false).then(()=>{
+            this.document.getElementById("splash").style.visibility = "hidden";
+            this.toastServ.presentToast("Bienvenido a MeditAr App, " + nombre + ". Nuestra app es totalmente gratuita, disfrutá de nuestras meditaciones y respirá.", "success","top",13000);
+            this.navCtrl.navigateForward("/tabs/principal");
+          })
         });
       }else{
+        this.disable_ingresar = false;
         var mensajeError = "El email o la contraseña son incorrectos";
         this.toastServ.presentToast(mensajeError, "error");
       }

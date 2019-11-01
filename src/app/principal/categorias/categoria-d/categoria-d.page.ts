@@ -12,7 +12,7 @@ import { DOCUMENT } from '@angular/common';
 })
 export class CategoriaDPage implements OnInit {
 
-    @ViewChild('slides') slides;
+    @ViewChild('slides',{static: false}) slides;
 
     downloadIconColor:string = "light";
     videoON = false;
@@ -82,7 +82,7 @@ export class CategoriaDPage implements OnInit {
     }
 
     ngOnInit(){
-      this.document.getElementById("downloadicon").style.display = "none";
+      //this.document.getElementById("downloadicon").style.display = "none";
         //this.slidesSubscriptions();
     }
 

@@ -4,7 +4,7 @@ import { map } from "rxjs/operators"
 import { Observable } from 'rxjs';
 import { ObjRespuestaServidor } from 'src/interfaces/interfaces';
 import { LocalStorageService } from './local-storage/local-storage.service';
-import { DOCUMENT } from '@angular/platform-browser';
+import { DOCUMENT } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -72,9 +72,15 @@ export class HttpService {
       this.document.getElementById("splash").style.visibility = "visible";
     }
 
+    console.log("Se envia la data: ");
+    console.log(JSON.stringify(data));
+    console.log("Con los headers: ");
+    console.log(JSON.stringify(requestOptions));
     return this.http.post(url, data ,requestOptions)
       .pipe(
         map((respuesta: any) => {
+          console.log("VUELVE LA RESPUESTA");
+          console.log(JSON.stringify(respuesta));
           this.document.getElementById("splash").style.visibility = "hidden";
           return respuesta;
         })

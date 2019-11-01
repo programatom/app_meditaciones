@@ -11,7 +11,7 @@ import { CategoriasNavigatorService } from 'src/app/services/categorias-logic/ca
 export class SlidesBPage implements OnInit {
 
   
-  @ViewChild('slidesElem') slidesElem;
+  @ViewChild('slidesElem',{static: false}) slidesElem;
 
   slides = [{
     "parrafos":[

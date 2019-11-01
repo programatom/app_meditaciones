@@ -3,7 +3,7 @@ import { Validators, FormBuilder, FormGroup, ValidationErrors } from '@angular/f
 import { NavController } from '@ionic/angular';
 import { ToastService, AuthService, LocalStorageService } from '../services/services.index';
 import { UserDataService } from '../services/user-data/user-data.service';
-import { DOCUMENT } from '@angular/platform-browser';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
     selector: 'app-register',
@@ -12,15 +12,16 @@ import { DOCUMENT } from '@angular/platform-browser';
 })
 export class RegisterPage implements OnInit {
 
-    private register: FormGroup;
+    public register: FormGroup;
+    registrar_disabled = false;
 
-    constructor(private navCtrl: NavController,
-        private formBuilder: FormBuilder,
-        private toastServ: ToastService,
-        private auth: AuthService,
-        private localStorageServ: LocalStorageService,
-        private userDataServ: UserDataService,
-        @Inject(DOCUMENT) private document: Document
+    constructor(public navCtrl: NavController,
+        public formBuilder: FormBuilder,
+        public toastServ: ToastService,
+        public auth: AuthService,
+        public localStorageServ: LocalStorageService,
+        public userDataServ: UserDataService,
+        @Inject(DOCUMENT) public document: Document
     ) {
 
         this.register = this.formBuilder.group({
@@ -78,6 +79,7 @@ export class RegisterPage implements OnInit {
     registerFN(data){
       console.log("Registración de: " , data)
       this.document.getElementById("splash").style.visibility = "visible";
+      this.registrar_disabled = true;
       this.auth.register(data).subscribe((respuesta)=>{
         if(respuesta.status == "success"){
           let token = respuesta.data.api_token;
@@ -85,14 +87,14 @@ export class RegisterPage implements OnInit {
           this.localStorageServ.insertAndInstantiateValue("token" , token).then(()=>{
             this.document.getElementById("splash").style.visibility = "visible";
             this.userDataServ.gatherUserData(true, user).then(()=>{
-              setTimeout(()=>{
-                this.document.getElementById("splash").style.visibility = "hidden";
-                this.toastServ.presentToast("Bienvenido a MeditAr App " + user.name + ". Nuestra app es totalmente gratuita, disfruta de nuestras meditaciones y respirá.", "success");
-                this.navCtrl.navigateForward("/tabs/principal");
-              },1800)
-            })
+              this.document.getElementById("splash").style.visibility = "hidden";
+              this.toastServ.presentToast("Bienvenido a MeditAr App " + user.name + ". Nuestra app es totalmente gratuita, disfruta de nuestras meditaciones y respirá.", "success");
+              this.navCtrl.navigateForward("/tabs/principal");
+            });
           });
+
         }else{
+          this.registrar_disabled = false;
           let errores = respuesta.data;
           let keys = Object.keys(errores);
           this.toastServ.presentToast(errores[keys[0]], "error");

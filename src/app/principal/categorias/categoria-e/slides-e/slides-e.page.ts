@@ -10,7 +10,7 @@ import { CategoriasNavigatorService } from 'src/app/services/categorias-logic/ca
 })
 export class SlidesEPage implements OnInit {
 
-  @ViewChild('slidesElem') slidesElem;
+  @ViewChild('slidesElem',{static: false}) slidesElem;
 
   slides = [{
     "texto":"Música exclusiva diseñada para ayudarte a concentrarte, relajarte o conciliar el sueño"
