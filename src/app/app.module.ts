@@ -17,12 +17,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { Media } from "@ionic-native/media/ngx";
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
+import { SlidesInicioPageModule } from "./slides-inicio/slides-inicio.module";
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,HttpClientModule,
-            IonicStorageModule.forRoot()],
+            IonicStorageModule.forRoot(), SlidesInicioPageModule],
   providers: [
     StatusBar,
     SplashScreen,

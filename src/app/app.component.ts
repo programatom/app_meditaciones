@@ -75,6 +75,6 @@ export class AppComponent {
   redirectToLoginOrRegisterPage(){
     this.statusBar.styleLightContent();
     this.splashScreen.hide();
-    this.navCtrl.navigateForward("/login-or-register");
+    this.navCtrl.navigateForward("/slides-inicio");
   }
 }

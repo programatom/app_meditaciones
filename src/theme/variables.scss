@@ -73,6 +73,7 @@
     --ion-color-libroMeditacion2:  rgb(62, 70, 132);
     --ion-color-libroMeditacion3: rgb(116, 118 ,165);
     --ion-color-libroMeditacion4:   rgb(195,193,212);
+    --ion-color-violeta :   rgb(147,112,219);
 }
 
 $customColors: (
@@ -80,7 +81,8 @@ $customColors: (
     "libroMeditacion1",
     "libroMeditacion2",
     "libroMeditacion3",
-    "libroMeditacion4"
+    "libroMeditacion4",
+    "violeta"
 );
 @each $color in $customColors {
     .ion-color-#{$color} {

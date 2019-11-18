@@ -37,6 +37,8 @@ export class CategoriaAPage implements OnInit {
     downloadIconColor:string = "light";
     downloading = false;
 
+    
+
     constructor(private navCtrl: NavController,
         public _CL: CategoriasLogicService,
         private downloadServ: DownloadService,

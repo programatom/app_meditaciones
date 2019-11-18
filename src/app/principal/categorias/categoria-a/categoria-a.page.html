@@ -18,11 +18,25 @@
                                      [ngClass]="{'fadeIn': media.fadeIn}">
                   </app-progress-bar>
                 </ion-col>
-                <ion-col size="12" class="center" [ngClass]="{'fadeIn': media.fadeIn}">
-                  <ion-text color="light" attr.id="{{media.id_minutero}}">{{media.minutero ? media.minutero: '00:00'}}</ion-text>
+                <ion-col size="6" class="center" [ngClass]="{'fadeIn': media.fadeIn}">
+                  <ion-text color="violeta" attr.id="{{media.id_minutero}}">{{media.minutero ? media.minutero: '00:00'}}</ion-text>
+                </ion-col>
+                <ion-col size="6" class="center" [ngClass]="{'fadeIn': media.fadeIn}">
+                  <ion-text color="violeta" attr.id="{{media.id_minutero_duracion}}">{{media.minutero_duracion ? media.minutero_duracion: '00:00'}}</ion-text>
                 </ion-col>
                 <ion-col size="12" class="center">
                   <app-loader categoria = "a" attr.id="{{media.id_loader}}"></app-loader>
+                </ion-col>
+
+                <ion-col size='12'>
+                  <ion-text color='violeta' style='font-size: 8vw;'>
+                    Sonido binaural Nº {{i + 1}}
+                  </ion-text>
+                </ion-col>
+                <ion-col size='12' *ngIf='media.texto'>
+                  <ion-text color='violeta'>
+                    {{media.texto}}
+                  </ion-text>
                 </ion-col>
             </ion-row>
             <div class="posicion-texto-explicativo" *ngIf="i == 0">

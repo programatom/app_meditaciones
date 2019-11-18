@@ -11,7 +11,7 @@ import { LocalStorageService } from '../local-storage/local-storage.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Media, MediaObject } from "@ionic-native/media/ngx";
 import { Platform } from '@ionic/angular';
-
+import { titulosMeditaciones, categoriasConTitulo } from './titulos-meditaciones';
 @Injectable({
   providedIn: 'root'
 })
@@ -61,7 +61,6 @@ export class CategoriasLogicService {
       this.userDataServ.userData.initCats.push({
         "nombre_categoria": data.nombre_categoria
       });
-      
     });
   }
 
@@ -234,19 +233,32 @@ export class CategoriasLogicService {
    
     console.log("Audios despues del filtro");
     console.log(JSON.stringify(this.audiosCategoria));
+    var contador = 0;
     this.audiosCategoria.filter((value)=>{
-      medias.push({
-        "url": value,
+
+      var mediaObj:any = 
+      { "url": value,
         "icon":"play",
         "animateUp" :false,
         "id_loader": Math.random(),
         "id_minutero":Math.random(),
+        "id_minutero_duracion":Math.random(),
         "id_progress":Math.random(),
         "fadeIn":false,
         "progress": 0,
         "audioObject":undefined,
         "audioDuration":0
-      });
+      }
+
+      if(categoriasConTitulo.includes(categoria)){
+        mediaObj.texto = titulosMeditaciones.categoria_a[contador];
+      }
+      contador ++;
+      medias.push(
+       mediaObj
+      );
+      console.log("MEDIA OBJ PUSHED")
+      console.log(mediaObj)
     });
     console.log("Audios con keys de trabajo");
     console.log(medias)
@@ -258,6 +270,7 @@ export class CategoriasLogicService {
       setTimeout(()=>{
         this._document.getElementById(medias[i].id_loader).style.visibility = "hidden";
         this._document.getElementById(medias[i].id_minutero).style.visibility = "hidden";
+        this._document.getElementById(medias[i].id_minutero_duracion).style.visibility = "hidden";
         this._document.getElementById(medias[i].id_progress).style.visibility = "hidden";
       },100)
     }
@@ -357,6 +370,7 @@ export class CategoriasLogicService {
             setTimeout(()=>{
               this._document.getElementById(medias[index].id_progress).style.visibility = "visible";
               this._document.getElementById(medias[index].id_minutero).style.visibility = "visible";
+              this._document.getElementById(medias[index].id_minutero_duracion).style.visibility = "visible";
               medias[index].fadeIn = true;
             },1500);
           }
@@ -507,6 +521,7 @@ export class CategoriasLogicService {
           this.blockPlayFN = false;
           console.log("SE CONSIGUE LA DURACION DEL AUDIO QUE ES");
           console.log(duration);
+          medias[index].minutero_duracion = this.minuteroFunction(parseInt(duration));
           this.currentAudio.onError.subscribe((err)=>{
             console.log("AUDIO ERROR : ")
             console.log(JSON.stringify(err))
@@ -563,6 +578,7 @@ export class CategoriasLogicService {
       this.index = index;
       audio.src = get;
       audio.load();
+      medias[index].minutero_duracion = this.minuteroFunction(1500);
       return;
     }
   }
