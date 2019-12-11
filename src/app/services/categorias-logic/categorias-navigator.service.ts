@@ -10,6 +10,7 @@ export class CategoriasNavigatorService {
 
   currentcategoryabcd:string;
   fetchAudiosIgnore = ["categoria_d"];
+  hasToInit;
 
   constructor(private categoriaLogic: CategoriasLogicService,
               private navCtrl: NavController){
@@ -31,9 +32,9 @@ export class CategoriasNavigatorService {
 
   }
 
-  async slidesSwitchNavigation(categoria:string){
+  async slidesSwitchNavigation(categoria:string, hasToInit = false){
+    this.hasToInit = hasToInit;
     this.currentcategoryabcd = this.getCurrentNavigationACBD(categoria);
-
     this.navCtrl.navigateForward("/slides-" + this.currentcategoryabcd );
 
   }

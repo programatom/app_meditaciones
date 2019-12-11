@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { CategoriasLogicService } from 'src/app/services/categorias-logic/categorias-logic.service';
+import { CategoriasNavigatorService } from 'src/app/services/categorias-logic/categorias-navigator.service';
+
 import { Timer } from 'easytimer.js';
 import { DownloadService, ToastService } from 'src/app/services/services.index';
 
@@ -42,7 +44,8 @@ export class CategoriaAPage implements OnInit {
     constructor(private navCtrl: NavController,
         public _CL: CategoriasLogicService,
         private downloadServ: DownloadService,
-        private toastServ: ToastService) {
+        private toastServ: ToastService,
+        private catNav: CategoriasNavigatorService) {
 
     }
 
@@ -125,6 +128,10 @@ export class CategoriaAPage implements OnInit {
                              this.minutero = minuteroCB;
                            });
 
+    }
+
+    volverASlidesSinInit(){
+      this.catNav.slidesSwitchNavigation(this.categoria, false);
     }
 
     ngOnDestroy() {

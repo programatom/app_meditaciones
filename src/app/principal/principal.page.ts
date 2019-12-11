@@ -69,7 +69,7 @@ export class PrincipalPage implements OnInit {
         if (isInit || categoria == "categoria_e") {
           this.categoriaNavigation.categoriasSwitchNavigation(categoria);
         } else {
-          this.categoriaNavigation.slidesSwitchNavigation(categoria);
+          this.categoriaNavigation.slidesSwitchNavigation(categoria,true);
         }
     }
 

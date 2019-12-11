@@ -1,16 +1,42 @@
 
 export const categoriasConTitulo = [
-	"categoria_a"
+	"categoria_a",
+	"categoria_b",
+	"categoria_e"
 ]
 export const titulosMeditaciones ={
 	"categoria_a" :[
-		"Para  relajación profunda 15,9",
-		"Para focalizar atención 15,6",
-		"Para conciliar el sueño 16",
-		"Para meditación profunda 912.2",
-		"Para dormir profundamente 8",
-		"Para intencionar antes o después de dormir 8",
-		"Para concentrarse 15.7"
+		"Para  relajación profunda",
+		"Para focalizar atención",
+		"Para conciliar el sueño",
+		"Para meditación profunda",
+		"Para dormir profundamente",
+		"Para intencionar antes o después de dormir",
+		"Para concentrarse"
+	],
+	"categoria_b" : [
+		"Te invito a conectar",
+		"Para relajarnos",
+		"Para observarnos",
+		"Para aquietarnos",
+		"Para expandirnos",
+		"Para ver mis sensaciones",
+		"Para reconocer mi estado interior",
+		"Para respirar concientemente",
+		"Para valorar mi dia",
+		"Para itencionar mi dia",
+		"Para dormir",
+		"Para reducir el estres",
+		"Para responder a mi necesidad interior",
+		"Para vivir la vida con proposito"
+	],
+	"categoria_e":[
+		"Para explorar la respiración consciente",
+		"Para fortalecer un centro de energía",
+		"Para encontrar un tiempo de calma",
+		"Para relajar el cuerpo",
+		"Para conocer tu estado de comodidad",
+		"Para regalarte un abrazo"
 	]
 
 } 

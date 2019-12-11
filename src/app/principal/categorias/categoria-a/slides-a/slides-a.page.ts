@@ -13,7 +13,9 @@ export class SlidesAPage implements OnInit {
   @ViewChild('slidesElem',{static: false}) slidesElem;
 
   slides = [{
-    "texto":"Los sonidos BINAURALES permiten que se sincronicen los dos hemisferios del cerebro, produciendo una sensación de bienestar y mejora del estado de ánimo."
+    "texto":"Los sonidos BINAURALES permiten que se sincronicen los dos hemisferios del cerebro, produciendo una sensación de bienestar y mejora del estado de ánimo.",
+  },{
+    "texto":"Usar auriculares"
   }
   /*,{
     "texto":"Las ondas cerebrales  son cinco, y se categorizan mediante el alfabeto griego. Por ejemplo las frecuencias de 4 a 7Hz, como puede verse mediante electroencefalogramas, generan ondas del tipo theta en el cerebro, asociadas al sueño lúcido y a estados de meditación profunda. Mientras que las gamma, de 32 a 100Hz, se asocian con estados de alta cognición."
@@ -41,7 +43,9 @@ export class SlidesAPage implements OnInit {
     let data = {
       "nombre_categoria": "categoria_a"
     }
-    this.categoriesLogic.initCategorie(data);
+    if(this.categoriaNavigation.hasToInit){
+      this.categoriesLogic.initCategorie(data);
+    }
     this.categoriaNavigation.categoriasSwitchNavigation("categoria_a");
   }
 

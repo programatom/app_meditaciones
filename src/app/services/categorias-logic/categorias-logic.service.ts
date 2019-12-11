@@ -37,7 +37,8 @@ export class CategoriasLogicService {
               private sanitizer:DomSanitizer,
               private media:Media,
               private plt: Platform,
-              private files:File) {
+              private files:File
+             ) {
                 this.token = this.userDataServ.token;
               }
 
@@ -251,7 +252,7 @@ export class CategoriasLogicService {
       }
 
       if(categoriasConTitulo.includes(categoria)){
-        mediaObj.texto = titulosMeditaciones.categoria_a[contador];
+        mediaObj.texto = titulosMeditaciones[categoria][contador];
       }
       contador ++;
       medias.push(
@@ -632,6 +633,7 @@ export class CategoriasLogicService {
    sanitizeurl(url){
      return this.sanitizer.bypassSecurityTrustResourceUrl(url);
    }
+
 
 
    // VIDEOS
