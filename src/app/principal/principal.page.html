@@ -1,7 +1,7 @@
 <ion-content padding>
     <div style='text-align: center;font-size: 5vw;'>
         <ion-text color='violeta'>
-            Meditar es una app libre pensada para ser una experiencia colaborativa , sin fines de lucro,para la expansión de la conciencia.
+            Meditar es una app libre pensada para ser una experiencia colaborativa , sin fines de lucro, para la expansión de la conciencia.
         </ion-text>
     </div>
 
@@ -12,20 +12,12 @@
     </ion-button>
 
     <div class="rectangulo categoria-A-fondo" (click)="checkInitializedCategorie('categoria_a')">
-        <div class="texto-categoria">
+        <div class="texto-categoria" style="top:10vw !important; ">
             <ion-text color="light">
-                Sonidos binaurales
+                Sonidos <br>binaurales
             </ion-text>
         </div>
     </div>
-    <div class="rectangulo categoria-C-fondo texto-B" (click)="checkInitializedCategorie('categoria_b')">
-        <div class="texto-categoria">
-            <ion-text color="light">
-                Meditaciones
-            </ion-text>
-        </div>
-    </div>
-    <!--
 
     <div class="rectangulo categoria-C-fondo" (click)="checkInitializedCategorie('categoria_c')">
         <div class="texto-categoria" style="top:10vw !important; ">
@@ -34,6 +26,16 @@
             </ion-text>
         </div>
     </div>
+
+    <div class="rectangulo categoria-B-fondo texto-B" (click)="checkInitializedCategorie('categoria_b')">
+        <div class="texto-categoria">
+            <ion-text color="light">
+                Meditaciones
+            </ion-text>
+        </div>
+    </div>
+    <!--
+
     <div class="rectangulo categoria-D-fondo" (click)="checkInitializedCategorie('categoria_d')">
         <div class="texto-categoria" style="top:10vw !important; ">
             <ion-text color="light">

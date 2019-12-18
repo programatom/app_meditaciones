@@ -23,12 +23,12 @@ export const titulosMeditaciones ={
 		"Para ver mis sensaciones",
 		"Para reconocer mi estado interior",
 		"Para respirar concientemente",
-		"Para valorar mi dia",
-		"Para itencionar mi dia",
+		"Para valorar mi día",
+		"Para itencionar mi día",
 		"Para dormir",
-		"Para reducir el estres",
+		"Para reducir el estrés",
 		"Para responder a mi necesidad interior",
-		"Para vivir la vida con proposito"
+		"Para vivir la vida con propósito"
 	],
 	"categoria_e":[
 		"Para explorar la respiración consciente",

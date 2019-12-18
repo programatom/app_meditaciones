@@ -38,6 +38,7 @@ export class LoginPage implements OnInit {
   }
 
   emailLogin(){
+    this.document.getElementById("splash").style.visibility = "visible";
     this.authServ.login(this.login.value).subscribe((respuesta)=>{
       console.log("RESPUESTA DEL SERVICIO DE LOGIN: ");
       console.log(JSON.stringify(respuesta));
@@ -46,7 +47,6 @@ export class LoginPage implements OnInit {
         let nombre = respuesta.data.name;
         console.log("SE INSTANCIA EL TOKEN EN EL LS");
 
-        this.document.getElementById("splash").style.visibility = "visible";
         this.disable_ingresar = true;
         this.localStorageServ.insertAndInstantiateValue("token" , token).then(()=>{
           this.userDataServ.gatherUserData(false).then(()=>{
@@ -56,6 +56,7 @@ export class LoginPage implements OnInit {
           })
         });
       }else{
+        this.document.getElementById("splash").style.visibility = "hidden";
         this.disable_ingresar = false;
         var mensajeError = "El email o la contraseña son incorrectos";
         this.toastServ.presentToast(mensajeError, "error");

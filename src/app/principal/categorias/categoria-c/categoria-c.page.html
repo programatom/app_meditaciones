@@ -38,7 +38,14 @@
                   </ion-text>
                 </ion-col>
 
+
+
             </ion-row>
+            
+               <div class="posicion-texto-slides" *ngIf="i == 0">
+              <ion-icon name = "book" color="light" class='tamano-libro' (click)='volverASlidesSinInit()'>
+              </ion-icon>
+            </div>
             <div class="posicion-texto-explicativo" *ngIf="i == 0">
                 <ion-text color="light">
                     Deslizar hacia la derecha

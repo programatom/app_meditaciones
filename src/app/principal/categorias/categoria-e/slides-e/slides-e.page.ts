@@ -12,8 +12,26 @@ export class SlidesEPage implements OnInit {
 
   @ViewChild('slidesElem',{static: false}) slidesElem;
 
-  slides = [{
-    "texto":"Música exclusiva diseñada para ayudarte a concentrarte, relajarte o conciliar el sueño"
+  slides = [
+  {
+    "parrafos":[
+      "La meditación ayuda a:",
+      "- Reducir Estrés y ansiedad",
+      "- Amplificar Bienestar y felicidad",
+      "- Mejorar Inteligencia mental y emocional",
+      "- Experimentar Crecimiento personal"
+
+    ]
+  },{
+      "parrafos":[
+      "La meditación ayuda a:",
+      "- Integra los hemisferios cerebrales ampliando la visión.",
+      "- Mejora la concentración.",
+      "- Reduce, previene y ayuda a manejar las situaciones de estrés.",
+      "- Estimula la creatividad.",
+      "- Disminuye y previene las enfermedades.",
+      "- Incrementa la energía general."
+    ]
   }
 ]
 
