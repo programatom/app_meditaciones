@@ -572,7 +572,7 @@ export class CategoriasLogicService {
       }, 30000)
       this.index = index;
     } else{
-      var get = "http://meditar-app.com.ar/media/audio.php?location=" + url;
+      var get = "https://meditar-app.com.ar/media/audio.php?location=" + url;
       console.log("Petición GET para elemento audio HTML");
       console.log(get);
       this.url = get;

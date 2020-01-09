@@ -12,9 +12,9 @@ import { DOCUMENT } from '@angular/common';
 export class HttpService {
 
   token:string;
-  splashIgnore = ["http://meditar-app.com.ar/public/api/actualizarDataUser", 
-                  "http://meditar-app.com.ar/public/api/login",
-                  "http://meditar-app.com.ar/public/api/register"];
+  splashIgnore = ["https://meditar-app.com.ar/public/api/actualizarDataUser", 
+                  "https://meditar-app.com.ar/public/api/login",
+                  "https://meditar-app.com.ar/public/api/register"];
 
   constructor(private http: HttpClient,
               private localStorageServ: LocalStorageService,
@@ -83,6 +83,13 @@ export class HttpService {
           console.log(JSON.stringify(respuesta));
           this.document.getElementById("splash").style.visibility = "hidden";
           return respuesta;
+          (error) =>{
+            console.log("Error con post!")
+            console.log(JSON.stringify(error))
+          }
+          (always) =>{
+            console.log(always)
+          }
         })
       );
   }

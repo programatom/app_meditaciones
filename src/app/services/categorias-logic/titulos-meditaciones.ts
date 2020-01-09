@@ -6,7 +6,7 @@ export const categoriasConTitulo = [
 ]
 export const titulosMeditaciones ={
 	"categoria_a" :[
-		"Para  relajación profunda",
+		"Para relajación profunda",
 		"Para focalizar atención",
 		"Para conciliar el sueño",
 		"Para meditación profunda",
